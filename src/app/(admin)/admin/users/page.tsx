@@ -22,8 +22,18 @@ import {
   MapPin,
   ShoppingBag,
   CreditCard,
-  ArrowRight
+  ArrowRight,
+  ShieldCheck,
+  UserCog
 } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+  DropdownMenuLabel,
+} from "@/components/ui/dropdown-menu";
 import { toast } from 'sonner';
 import Image from 'next/image';
 import {
@@ -81,6 +91,29 @@ export default function UsersPage() {
   const openUserDetails = (user: UserData) => {
     setSelectedUser(user);
     setIsDetailsOpen(true);
+  };
+
+  const handleUpdateRole = async (userId: string, newRole: string) => {
+    const confirm = window.confirm(`Are you sure you want to change this user's role to ${newRole}?`);
+    if (!confirm) return;
+
+    try {
+      const response = await fetch('/api/admin/users', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, role: newRole }),
+      });
+
+      if (response.ok) {
+        toast.success(`User role updated to ${newRole}`);
+        fetchUsers();
+      } else {
+        const error = await response.json();
+        toast.error(error.message || 'Failed to update role');
+      }
+    } catch (error) {
+      toast.error('Error updating user role');
+    }
   };
 
   return (
@@ -185,11 +218,33 @@ export default function UsersPage() {
                           <MoreHorizontal className="h-4 w-4" />
                         </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
+                      <DropdownMenuContent align="end" className="w-48">
+                        <DropdownMenuLabel className="text-[10px] font-black uppercase text-muted-foreground px-2 py-1.5">User Actions</DropdownMenuLabel>
                         <DropdownMenuItem onClick={() => openUserDetails(user)} className="cursor-pointer">
                           <Eye className="mr-2 h-4 w-4" /> View Details
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="text-destructive cursor-pointer">
+                        
+                        <DropdownMenuSeparator />
+                        <DropdownMenuLabel className="text-[10px] font-black uppercase text-muted-foreground px-2 py-1.5">Management</DropdownMenuLabel>
+                        
+                        {user.role === 'user' ? (
+                          <DropdownMenuItem 
+                            onClick={() => handleUpdateRole(user._id, 'admin')}
+                            className="cursor-pointer text-blue-600 font-bold"
+                          >
+                            <ShieldCheck className="mr-2 h-4 w-4" /> Make Admin
+                          </DropdownMenuItem>
+                        ) : (
+                          <DropdownMenuItem 
+                            onClick={() => handleUpdateRole(user._id, 'user')}
+                            className="cursor-pointer text-slate-600 font-bold"
+                          >
+                            <UserCog className="mr-2 h-4 w-4" /> Make User
+                          </DropdownMenuItem>
+                        )}
+
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem className="text-destructive cursor-pointer font-medium">
                           <ShieldAlert className="mr-2 h-4 w-4" /> Suspend User
                         </DropdownMenuItem>
                       </DropdownMenuContent>
