@@ -21,16 +21,22 @@ async function migrate() {
     await connectToDatabase();
     console.log('Connected to database.');
 
-    const defaultDomain = 'mibd.shop';
+    const oldDomain = 'mibd.shop';
+    const newDomain = 'bd-dukan.com';
+    
+    console.log(`Migrating from ${oldDomain} to ${newDomain}...`);
+
     const filter = { 
       $or: [
         { domain: { $exists: false } },
         { domain: 'unknown' },
         { domain: null },
-        { domain: '' }
+        { domain: '' },
+        { domain: oldDomain },
+        { domain: 'www.' + oldDomain }
       ] 
     };
-    const update = { $set: { domain: defaultDomain } };
+    const update = { $set: { domain: newDomain } };
 
     const models = [
       { name: 'Product', model: Product },

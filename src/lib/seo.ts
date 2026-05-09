@@ -39,7 +39,7 @@ export function generateProductSchema(product: any) {
     },
     offers: {
       '@type': 'Offer',
-      url: `${process.env.NEXTAUTH_URL || 'https://www.mibd.shop'}/product/${product.slug}`,
+      url: `${process.env.NEXTAUTH_URL || 'https://www.bd-dukan.com'}/product/${product.slug}`,
       priceCurrency: 'USD',
       price: price,
       availability: Number.isFinite(product.stock) && product.stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',

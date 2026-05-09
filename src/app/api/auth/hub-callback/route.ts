@@ -23,7 +23,7 @@ export async function GET(req: NextRequest) {
     console.warn('Hub Callback: No target found, redirecting to hub dashboard');
     const isProd = process.env.NODE_ENV === 'production';
     const hubDashUrl = isProd 
-      ? 'https://www.mibd.shop/dashboard' 
+      ? 'https://www.bd-dukan.com/dashboard' 
       : new URL('/dashboard', req.url).toString();
     return NextResponse.redirect(hubDashUrl);
   }

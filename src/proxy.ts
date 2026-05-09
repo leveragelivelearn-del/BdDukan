@@ -8,7 +8,7 @@ export const proxy = auth(async (req) => {
   
   // Host detection
   const host = req.headers.get("host") || "";
-  const isHub = host.includes("mibd.shop") || host.includes("localhost:3000");
+  const isHub = host.includes("bd-dukan.com") || host.includes("localhost:3000");
 
   const isAdminRoute = nextUrl.pathname.startsWith("/admin");
   const isAuthRoute = nextUrl.pathname.startsWith("/login") || nextUrl.pathname.startsWith("/register");
