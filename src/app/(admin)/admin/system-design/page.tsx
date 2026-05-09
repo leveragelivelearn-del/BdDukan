@@ -16,7 +16,8 @@ import {
   BarChart3,
   Truck,
   Settings2,
-  Code
+  Code,
+  X
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -708,32 +709,50 @@ export default function SuperConfigPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                   <div className="space-y-3">
-                    <Label className="text-sm font-semibold text-gray-700">Bangla QR Image</Label>
-                    <ImageUpload 
-                      onUpload={(url) => setSettings({
-                        ...settings,
-                        manualPaymentConfig: {
-                          ...(settings?.manualPaymentConfig || {}),
-                          banglaQr: {
-                            ...(settings?.manualPaymentConfig?.banglaQr || {}),
-                            qrCode: url
-                          }
-                        }
-                      })} 
-                      className="h-32 rounded-2xl border-2 border-dashed border-primary/20 hover:border-primary transition-all bg-white"
-                    />
-                  </div>
-                  {settings?.manualPaymentConfig?.banglaQr?.qrCode && (
-                    <div className="flex justify-center">
-                      <div className="relative h-40 w-40 p-2 bg-white rounded-2xl shadow-xl border border-primary/10 overflow-hidden">
-                        <img 
-                          src={settings.manualPaymentConfig.banglaQr.qrCode} 
-                          alt="Bangla QR" 
-                          className="h-full w-full object-contain"
+                    <Label className="text-sm font-semibold text-gray-700">Upload Bangla QR</Label>
+                    <div className="flex items-center gap-4">
+                      {settings?.manualPaymentConfig?.banglaQr?.qrCode && (
+                        <div className="h-16 w-16 rounded-xl border bg-white p-1 flex items-center justify-center overflow-hidden shrink-0 shadow-sm relative group">
+                          <img src={settings.manualPaymentConfig.banglaQr.qrCode} alt="QR" className="max-h-full max-w-full object-contain" />
+                          <button 
+                            onClick={() => setSettings({
+                              ...settings,
+                              manualPaymentConfig: {
+                                ...(settings?.manualPaymentConfig || {}),
+                                banglaQr: {
+                                  ...(settings?.manualPaymentConfig?.banglaQr || {}),
+                                  qrCode: ''
+                                }
+                              }
+                            })}
+                            className="absolute inset-0 bg-red-500/80 text-white opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-lg"
+                          >
+                            <X className="h-4 w-4" />
+                          </button>
+                        </div>
+                      )}
+                      <div className="flex-1">
+                        <ImageUpload 
+                          onUpload={(url) => setSettings({
+                            ...settings,
+                            manualPaymentConfig: {
+                              ...(settings?.manualPaymentConfig || {}),
+                              banglaQr: {
+                                ...(settings?.manualPaymentConfig?.banglaQr || {}),
+                                qrCode: url
+                              }
+                            }
+                          })} 
+                          className="h-16 rounded-xl border-2 border-dashed border-primary/20 hover:border-primary transition-all bg-white"
                         />
                       </div>
                     </div>
-                  )}
+                  </div>
+                  <div className="p-4 bg-white/50 rounded-2xl border border-primary/10">
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      <strong>Tip:</strong> You can download your Bangla QR from your bank app (City Bank, EBL, etc.) and upload it here. Customers will scan this to pay from any bank app.
+                    </p>
+                  </div>
                 </div>
               </div>
               <div className="space-y-2">
