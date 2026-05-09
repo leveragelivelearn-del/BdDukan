@@ -136,6 +136,7 @@ async function seed() {
       slug: "premium-black-seed-oil", 
       price: 850, 
       cat: "natural-oils", 
+      image: "/assets/organic/products/Premium Black Seed Oil.webp",
       desc: "100% pure cold-pressed Nigella Sativa oil. Known as 'The Cure for everything but death', it is a powerful supplement for immunity and skin health.",
       features: ["Cold Pressed", "100% Pure", "Strong Pungency"]
     },
@@ -144,6 +145,7 @@ async function seed() {
       slug: "extra-virgin-olive-oil-org", 
       price: 1100, 
       cat: "natural-oils", 
+      image: "/assets/organic/products/Extra Virgin Olive Oil.webp",
       desc: "First cold-pressed olive oil sourced from organic groves. Perfect for salads, light cooking, and skin massage.",
       features: ["Heart Healthy", "High Smoke Point", "Organic Certified"]
     },
@@ -152,6 +154,7 @@ async function seed() {
       slug: "sweet-almond-oil-pure", 
       price: 950, 
       cat: "natural-oils", 
+      image: "/assets/organic/products/Pure Sweet Almond Oil.webp",
       desc: "Nutrient-rich oil extracted from high-quality sweet almonds. Excellent for infant massage, skin hydration, and hair strengthening.",
       features: ["Rich in Vitamin E", "Non-Greasy", "Multipurpose Use"]
     },
@@ -162,6 +165,7 @@ async function seed() {
       slug: "ashwagandha-powder-organic", 
       price: 450, 
       cat: "herbal-medicine", 
+      image: "/assets/organic/products/Organic Ashwagandha Powder.webp",
       desc: "Pure Withania Somnifera root powder. A powerful adaptogen that helps the body manage stress, improves sleep quality, and boosts muscle strength.",
       features: ["Stress Relief", "Boosts Vitality", "100% Pure Root"]
     },
@@ -170,6 +174,7 @@ async function seed() {
       slug: "moringa-powder-superfood", 
       price: 480, 
       cat: "herbal-medicine", 
+      image: "/assets/organic/products/Pure Moringa Leaf Powder.webp",
       desc: "Considered the 'Miracle Tree', our moringa powder is made from shade-dried organic leaves. It contains 7x more Vitamin C than oranges and 4x more Calcium than milk.",
       features: ["Immunity Booster", "Rich in Iron", "Natural Multivitamin"]
     },
@@ -178,6 +183,7 @@ async function seed() {
       slug: "triphala-powder-digestive", 
       price: 350, 
       cat: "herbal-medicine", 
+      image: "/assets/organic/products/Triphala Digestive Powde.webp",
       desc: "A balanced blend of Amla, Bibhitaki, and Haritaki. This traditional Ayurvedic formula supports colon health and gentle detoxification.",
       features: ["Improves Digestion", "Detoxifies System", "Ayurvedic Classic"]
     },
@@ -186,6 +192,7 @@ async function seed() {
       slug: "spirulina-powder-premium", 
       price: 950, 
       cat: "herbal-medicine", 
+      image: "/assets/organic/products/Premium Spirulina Powder.webp",
       desc: "A nutrient-dense blue-green algae that provides a massive protein boost and helps combat fatigue. Perfect for smoothies.",
       features: ["High Protein Content", "Energy Booster", "Antioxidant Rich"]
     },
@@ -194,6 +201,7 @@ async function seed() {
       slug: "turmeric-capsules-curcumin", 
       price: 850, 
       cat: "herbal-medicine", 
+      image: "/assets/organic/products/Organic Turmeric Capsules.webp",
       desc: "High-absorption turmeric capsules with added black pepper (piperine) to maximize the anti-inflammatory benefits of curcumin.",
       features: ["Joint Support", "Anti-inflammatory", "High Bioavailability"]
     },
@@ -204,6 +212,7 @@ async function seed() {
       slug: "ajwa-dates-madinah", 
       price: 2400, 
       cat: "dry-fruits", 
+      image: "/assets/organic/products/Premium Ajwa Dates (Madinah).webp",
       desc: "The most prestigious dates from Madinah. Soft, dark, and rich in nutrients, these dates are known for their unique healing properties.",
       features: ["Soft Texture", "Rich in Iron", "Natural Sweetener"]
     },
@@ -212,6 +221,7 @@ async function seed() {
       slug: "roasted-cashews-premium", 
       price: 1150, 
       cat: "dry-fruits", 
+      image: "/assets/organic/products/Roasted Whole Cashew Nuts.webp",
       desc: "Large, crispy roasted cashews with a touch of sea salt. A perfect healthy snack for all ages.",
       features: ["Large Size", "Perfectly Roasted", "High in Protein"]
     },
@@ -220,6 +230,7 @@ async function seed() {
       slug: "california-almonds-shelled", 
       price: 950, 
       cat: "dry-fruits", 
+      image: "/assets/organic/products/California Shelled Almonds.webp",
       desc: "Top-grade California almonds, rich in Vitamin E and heart-healthy fats. Great for brain health and glowing skin.",
       features: ["Sweet Taste", "Uniform Size", "Energy Dense"]
     },
@@ -228,6 +239,7 @@ async function seed() {
       slug: "walnut-kernels-premium", 
       price: 1600, 
       cat: "dry-fruits", 
+      image: "/assets/organic/products/Premium Walnut Kernels.webp",
       desc: "High-quality walnut kernels rich in Omega-3. Essential for brain function and reducing inflammation.",
       features: ["Omega-3 Rich", "Crispy & Fresh", "Brain Food"]
     },
@@ -236,6 +248,7 @@ async function seed() {
       slug: "mixed-dry-fruits-berries", 
       price: 1350, 
       cat: "dry-fruits", 
+      image: "/assets/organic/products/Mixed Dry Fruits & Berries.webp",
       desc: "A delicious and healthy mix of almonds, cashews, raisins, cranberries, and pumpkin seeds. The ultimate energy trail mix.",
       features: ["Vitamin Rich", "Perfect Snack", "Diverse Nutrients"]
     },

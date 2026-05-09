@@ -1,42 +1,4 @@
-# Organic Product Image Prompts
 
-This list contains high-quality prompts for the remaining 43 products. You can use these prompts in Canva or any AI image generator.
-
----
-
-## 🌿 Natural Oils (Remaining)
-
-| SL | Product Title | AI Image Prompt |
-|:---|:---|:---|
-| 1 | Premium Black Seed Oil | Realistic product photography of a small amber glass bottle of black seed oil (Kalo Jira oil), black seeds scattered on a wooden surface, natural healing aesthetic, 8k resolution. |
-| 2 | Extra Virgin Olive Oil | Realistic product photography of a glass bottle of extra virgin olive oil, golden green liquid, fresh olives and leaves in the background, Mediterranean sunlight, 8k resolution. |
-| 3 | Pure Sweet Almond Oil | Realistic product photography of a glass bottle of sweet almond oil, light golden color, whole almonds next to it, soft and clean skincare aesthetic, 8k resolution. |
-
----
-
-## 💊 Herbal Medicine
-
-| SL | Product Title | AI Image Prompt |
-|:---|:---|:---|
-| 4 | Organic Ashwagandha Powder | Realistic product photography of a glass jar filled with off-white Ashwagandha root powder, a wooden spoon, organic roots in the background, earthy tones, 8k resolution. |
-| 5 | Pure Moringa Leaf Powder | Realistic product photography of a jar filled with vibrant green Moringa leaf powder, fresh green moringa leaves around, superfood aesthetic, 8k resolution. |
-| 6 | Triphala Digestive Powder | Realistic product photography of a jar of Triphala powder, dried Amla and Haritaki fruits nearby, rustic Ayurvedic pharmacy style, 8k resolution. |
-| 7 | Premium Spirulina Powder | Realistic product photography of a jar of deep green Spirulina powder, smooth texture, clean laboratory/wellness aesthetic, 8k resolution. |
-| 8 | Organic Turmeric Capsules | Realistic product photography of bright orange turmeric capsules spilling out of a glass bottle, fresh turmeric roots in the background, clean medical aesthetic, 8k resolution. |
-
----
-
-## 🥜 Dry Fruits & Nuts
-
-| SL | Product Title | AI Image Prompt |
-|:---|:---|:---|
-| 9 | Premium Ajwa Dates (Madinah) | Realistic product photography of a bowl of dark, wrinkled Ajwa dates, soft lighting, luxury organic food aesthetic, 8k resolution. |
-| 10 | Roasted Whole Cashew Nuts | Realistic product photography of a pile of large roasted cashew nuts, golden brown color, crispy texture, warm lighting, 8k resolution. |
-| 11 | California Shelled Almonds | Realistic product photography of a handful of premium California almonds, wooden bowl, natural sunlight, healthy snack aesthetic, 8k resolution. |
-| 12 | Premium Walnut Kernels | Realistic product photography of brain-shaped walnut kernels in a rustic bowl, high-end food photography, sharp details, 8k resolution. |
-| 13 | Mixed Dry Fruits & Berries | Realistic product photography of a colorful mix of almonds, cashews, raisins, and dried cranberries in a glass jar, vibrant and healthy, 8k resolution. |
-
----
 
 ## 🌶️ Organic Spices
 
