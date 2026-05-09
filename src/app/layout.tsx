@@ -259,12 +259,16 @@ export default async function RootLayout({
   // If sub is missing, default to not expired (allow access by default)
   const isExpired = sub ? (sub.status !== 'Active' || (sub.expiryDate && new Date(sub.expiryDate) < new Date())) : false;
 
-  // Allow critical routes to bypass blocker so admin can login and fix the subscription
-  const isBypassRoute = 
-    pathname.toLowerCase().includes('system-design') || 
+  // Allow admin and auth routes to bypass blocker so admin can login and fix the subscription
+  const isAdminRoute = pathname.toLowerCase().startsWith('/admin');
+  const isAuthRoute = 
     pathname.toLowerCase().includes('/login') || 
-    pathname.toLowerCase().includes('/register') ||
-    pathname.toLowerCase().includes('/api/auth');
+    pathname.toLowerCase().includes('/register') || 
+    pathname.toLowerCase().includes('/api/auth') ||
+    pathname.toLowerCase().includes('/forgot-password') ||
+    pathname.toLowerCase().includes('/reset-password');
+  
+  const isBypassRoute = isAdminRoute || isAuthRoute || pathname.toLowerCase().includes('system-design');
 
   const showBlocker = isExpired && !isBypassRoute;
 
