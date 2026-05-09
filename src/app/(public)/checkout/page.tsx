@@ -21,7 +21,7 @@ import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { Loader2, CreditCard, Truck, ShoppingBag, CheckCircle2, Plus, Minus, X } from 'lucide-react';
+import { Loader2, CreditCard, Truck, ShoppingBag, CheckCircle2, Plus, Minus, X, Globe } from 'lucide-react';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 
@@ -717,14 +717,15 @@ export default function CheckoutPage() {
 
                             {(settings?.manualPaymentConfig?.bkash?.active || 
                               settings?.manualPaymentConfig?.nagad?.active || 
-                              settings?.manualPaymentConfig?.rocket?.active) && (
+                              settings?.manualPaymentConfig?.rocket?.active ||
+                              settings?.manualPaymentConfig?.banglaQr?.active) && (
                               <FormItem className="flex items-center space-x-3 space-y-0 border rounded-lg p-4 cursor-pointer hover:bg-muted/50 transition-colors">
                                 <FormControl>
                                   <RadioGroupItem value="Manual" />
                                 </FormControl>
                                 <FormLabel className="font-bold flex-1 cursor-pointer">
-                                  Manual Payment (bKash/Nagad/Rocket)
-                                  <p className="text-xs font-normal text-muted-foreground mt-1">Send money manually and provide transaction details.</p>
+                                  Manual Payment (MFS / Bangla QR)
+                                  <p className="text-xs font-normal text-muted-foreground mt-1">Send money manually or scan QR to pay.</p>
                                 </FormLabel>
                               </FormItem>
                             )}
@@ -737,8 +738,8 @@ export default function CheckoutPage() {
 
                   {/* Manual Payment Option Selection (Cards) */}
                   {form.watch('paymentMethod') === 'Manual' && settings?.manualPaymentConfig && (
-                    <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4 animate-in fade-in slide-in-from-top duration-300">
-                      {['bkash', 'nagad', 'rocket'].map((method) => {
+                    <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-3 animate-in fade-in slide-in-from-top duration-300">
+                      {['bkash', 'nagad', 'rocket', 'banglaQr'].map((method) => {
                         const config = settings.manualPaymentConfig[method];
                         if (!config?.active) return null;
                         const isSelected = selectedMethod?.id === method;
@@ -753,8 +754,14 @@ export default function CheckoutPage() {
                               isSelected ? 'border-primary bg-primary/5' : 'border-muted'
                             }`}
                           >
-                            <img src={`/assets/${method}logo.webp`} alt={method} className="h-8 w-auto" />
-                            <p className="text-[10px] font-bold uppercase">{method}</p>
+                            <div className="h-10 w-10 flex items-center justify-center">
+                              {method === 'banglaQr' ? (
+                                <Globe className="h-8 w-8 text-primary" />
+                              ) : (
+                                <img src={`/assets/${method}logo.webp`} alt={method} className="h-full w-auto object-contain" />
+                              )}
+                            </div>
+                            <p className="text-[10px] font-bold uppercase">{method === 'banglaQr' ? 'Bangla QR' : method}</p>
                             {isSelected && (
                               <div className="text-[8px] font-bold text-primary flex items-center gap-1 mt-1">
                                 <CheckCircle2 className="h-2 w-2" /> Details Added
@@ -825,10 +832,16 @@ export default function CheckoutPage() {
           <DialogHeader className="p-8 bg-gradient-to-br from-primary to-primary/80 text-white relative">
             <div className="flex items-center gap-4">
               <div className="h-16 w-16 bg-white rounded-2xl p-2 shadow-lg flex items-center justify-center">
-                <img src={`/assets/${selectedMethod?.id}logo.webp`} alt={selectedMethod?.id} className="h-full w-auto object-contain" />
+                {selectedMethod?.id === 'banglaQr' ? (
+                  <Globe className="h-10 w-10 text-primary" />
+                ) : (
+                  <img src={`/assets/${selectedMethod?.id}logo.webp`} alt={selectedMethod?.id} className="h-full w-auto object-contain" />
+                )}
               </div>
               <div className="text-left">
-                <DialogTitle className="text-2xl font-black uppercase tracking-tighter">Pay via {selectedMethod?.id}</DialogTitle>
+                <DialogTitle className="text-2xl font-black uppercase tracking-tighter">
+                  {selectedMethod?.id === 'banglaQr' ? 'Pay via Bangla QR' : `Pay via ${selectedMethod?.id}`}
+                </DialogTitle>
                 <DialogDescription className="text-white/80 text-xs font-bold">Follow the steps below to complete payment.</DialogDescription>
               </div>
             </div>
@@ -837,30 +850,34 @@ export default function CheckoutPage() {
           <div className="p-8 space-y-6">
             {/* Payment Info */}
             <div className="bg-primary/5 rounded-2xl p-6 border-2 border-primary/10 space-y-4">
-              <div className="flex justify-between items-center">
-                <span className="text-[10px] font-black uppercase tracking-widest opacity-50">Send Money To</span>
-                <Badge variant="secondary" className="bg-primary/10 text-primary border-none font-bold">Personal Number</Badge>
-              </div>
-              <div className="flex items-center justify-between gap-4">
-                <p className="text-2xl font-black tracking-widest text-primary">{selectedMethod?.number}</p>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  className="h-8 rounded-full text-[10px] font-bold border-2"
-                  onClick={() => {
-                    navigator.clipboard.writeText(selectedMethod?.number);
-                    toast.success('Number copied to clipboard!');
-                  }}
-                >
-                  Copy
-                </Button>
-              </div>
+              {selectedMethod?.id !== 'banglaQr' && (
+                <>
+                  <div className="flex justify-between items-center">
+                    <span className="text-[10px] font-black uppercase tracking-widest opacity-50">Send Money To</span>
+                    <Badge variant="secondary" className="bg-primary/10 text-primary border-none font-bold">Personal Number</Badge>
+                  </div>
+                  <div className="flex items-center justify-between gap-4">
+                    <p className="text-2xl font-black tracking-widest text-primary">{selectedMethod?.number}</p>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="h-8 rounded-full text-[10px] font-bold border-2"
+                      onClick={() => {
+                        navigator.clipboard.writeText(selectedMethod?.number);
+                        toast.success('Number copied to clipboard!');
+                      }}
+                    >
+                      Copy
+                    </Button>
+                  </div>
+                </>
+              )}
               
-              {selectedMethod?.qrCode && (
+              {(selectedMethod?.qrCode || selectedMethod?.id === 'banglaQr') && (
                 <div className="flex flex-col items-center gap-2 pt-2 border-t border-primary/10">
-                  <p className="text-[10px] font-bold uppercase opacity-40">Or Scan QR Code</p>
-                  <div className="p-2 bg-white rounded-xl shadow-sm border">
-                    <img src={selectedMethod.qrCode} alt="QR" className="h-32 w-32 object-contain" />
+                  <p className="text-[10px] font-bold uppercase opacity-40">Scan QR Code to Pay</p>
+                  <div className="p-2 bg-white rounded-xl shadow-sm border border-primary/20">
+                    <img src={selectedMethod?.qrCode || '/assets/placeholder-qr.png'} alt="QR" className="h-48 w-48 object-contain" />
                   </div>
                 </div>
               )}

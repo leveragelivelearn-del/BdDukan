@@ -673,27 +673,68 @@ export default function SuperConfigPage() {
                         className="w-full h-10 rounded-lg border px-3 text-sm"
                       />
                     </div>
-                    <div className="space-y-2">
-                      <Label className="text-[10px] uppercase opacity-60">QR Code URL</Label>
-                      <input 
-                        type="text"
-                        value={settings?.manualPaymentConfig?.[method]?.qrCode || ''}
-                        onChange={(e) => setSettings({
-                          ...settings,
-                          manualPaymentConfig: {
-                            ...(settings?.manualPaymentConfig || {}),
-                            [method]: {
-                              ...(settings?.manualPaymentConfig?.[method] || {}),
-                              qrCode: e.target.value
-                            }
-                          }
-                        })}
-                        placeholder="https://imgbb.com/..."
-                        className="w-full h-10 rounded-lg border px-3 text-sm text-[10px]"
-                      />
-                    </div>
                   </div>
                 ))}
+              </div>
+
+              {/* Bangla QR Section */}
+              <div className="p-6 rounded-3xl border-2 border-dashed border-primary/20 bg-primary/5 space-y-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-primary/10 rounded-xl">
+                      <Globe className="w-6 h-6 text-primary" />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-lg">Bangla QR (Universal Pay)</h4>
+                      <p className="text-xs text-muted-foreground">Accept payment from any bank app via Bangla QR</p>
+                    </div>
+                  </div>
+                  <input 
+                    type="checkbox" 
+                    checked={settings?.manualPaymentConfig?.banglaQr?.active ?? false}
+                    onChange={(e) => setSettings({
+                      ...settings,
+                      manualPaymentConfig: {
+                        ...(settings?.manualPaymentConfig || {}),
+                        banglaQr: {
+                          ...(settings?.manualPaymentConfig?.banglaQr || {}),
+                          active: e.target.checked
+                        }
+                      }
+                    })}
+                    className="h-5 w-5 rounded-md border-primary text-primary focus:ring-primary"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                  <div className="space-y-3">
+                    <Label className="text-sm font-semibold text-gray-700">Bangla QR Image</Label>
+                    <ImageUpload 
+                      onUpload={(url) => setSettings({
+                        ...settings,
+                        manualPaymentConfig: {
+                          ...(settings?.manualPaymentConfig || {}),
+                          banglaQr: {
+                            ...(settings?.manualPaymentConfig?.banglaQr || {}),
+                            qrCode: url
+                          }
+                        }
+                      })} 
+                      className="h-32 rounded-2xl border-2 border-dashed border-primary/20 hover:border-primary transition-all bg-white"
+                    />
+                  </div>
+                  {settings?.manualPaymentConfig?.banglaQr?.qrCode && (
+                    <div className="flex justify-center">
+                      <div className="relative h-40 w-40 p-2 bg-white rounded-2xl shadow-xl border border-primary/10 overflow-hidden">
+                        <img 
+                          src={settings.manualPaymentConfig.banglaQr.qrCode} 
+                          alt="Bangla QR" 
+                          className="h-full w-full object-contain"
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
               <div className="space-y-2">
                 <Label className="font-bold">Payment Instructions</Label>

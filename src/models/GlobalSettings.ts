@@ -62,6 +62,7 @@ export interface IGlobalSettings extends Document {
     bkash?: { number: string; qrCode?: string; active: boolean };
     nagad?: { number: string; qrCode?: string; active: boolean };
     rocket?: { number: string; qrCode?: string; active: boolean };
+    banglaQr?: { qrCode?: string; active: boolean };
     instructions?: string;
   };
   googleAnalyticsId?: string; // GA4 Property ID
@@ -177,6 +178,10 @@ const GlobalSettingsSchema: Schema<IGlobalSettings> = new Schema(
         number: String, 
         qrCode: String, 
         active: { type: Boolean, default: false } 
+      },
+      banglaQr: {
+        qrCode: String,
+        active: { type: Boolean, default: false }
       },
       instructions: { type: String, default: 'Please send the money to any of the numbers below and provide the transaction ID.' }
     },
