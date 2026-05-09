@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
       cancel_url: `${baseUrl}/api/payment/cancel?id=${orderId}`,
       ipn_url: `${baseUrl}/api/payment/ipn`,
       shipping_method: 'Courier',
-      product_name: 'Janopriyo Shop Order',
+      product_name: 'BD Dukan Order',
       product_category: 'E-commerce',
       product_profile: 'general',
       cus_name: shippingAddress.fullName,

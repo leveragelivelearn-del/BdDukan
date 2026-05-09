@@ -120,7 +120,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           await connectToDatabase();
           
           // Use a safer way to get the hub domain without using headers() in OAuth callback
-          const hubDomain = process.env.NEXT_PUBLIC_HUB_DOMAIN || 'janopriyo.com';
+          const hubDomain = process.env.NEXT_PUBLIC_HUB_DOMAIN || 'mibd.shop';
           const domain = hubDomain.replace('www.', '');
 
           const savedUser = await User.findOneAndUpdate(

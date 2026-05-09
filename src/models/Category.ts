@@ -24,7 +24,7 @@ const CategorySchema: Schema<ICategory> = new Schema(
       index: true,
       trim: true,
       lowercase: true,
-      default: 'janopriyo.com'
+      default: 'mibd.shop'
     },
   },
   { timestamps: true }

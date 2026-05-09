@@ -24,7 +24,7 @@ export async function GET(req: NextRequest) {
     console.log('Bridge: Decoding token...');
     // Use the hub's salt (always 'authjs.session-token' on hub in prod = '__Secure-authjs.session-token')
     // Hub encoded the token with its own salt, so we must decode with the same.
-    // Hub is always janopriyo.com (production), so its cookie name is __Secure-authjs.session-token
+    // Hub is always mibd.shop (production), so its cookie name is __Secure-authjs.session-token
     const hubSalt = isProd ? '__Secure-authjs.session-token' : 'authjs.session-token';
     const decoded = await decode({
       token,

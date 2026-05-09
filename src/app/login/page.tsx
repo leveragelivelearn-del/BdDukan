@@ -42,14 +42,14 @@ export default function LoginPage() {
   const { data: session, status } = useSession();
   const searchParams = useSearchParams();
   const remoteTenant = searchParams.get('remote_tenant');
-  const hubDomain = process.env.NEXT_PUBLIC_HUB_DOMAIN || 'www.janopriyo.com';
+  const hubDomain = process.env.NEXT_PUBLIC_HUB_DOMAIN || 'www.mibd.shop';
 
   // Force WWW in production for consistency and to avoid Auth mismatch
   useEffect(() => {
     if (typeof window !== 'undefined' && process.env.NODE_ENV === 'production') {
       const host = window.location.host;
-      if (host === 'janopriyo.com') {
-        window.location.href = `https://www.janopriyo.com${window.location.pathname}${window.location.search}`;
+      if (host === 'mibd.shop') {
+        window.location.href = `https://www.mibd.shop${window.location.pathname}${window.location.search}`;
       }
     }
   }, []);
@@ -81,7 +81,7 @@ export default function LoginPage() {
     setIsGoogleLoading(true);
     try {
       const currentHost = window.location.host.replace('www.', '');
-      const isHub = currentHost === 'janopriyo.com' || currentHost.includes('localhost');
+      const isHub = currentHost === 'mibd.shop' || currentHost.includes('localhost');
 
       if (!isHub) {
         const isProd = process.env.NODE_ENV === 'production';

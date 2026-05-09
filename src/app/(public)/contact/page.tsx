@@ -7,8 +7,8 @@ import { Separator } from '@/components/ui/separator';
 import { Card, CardContent } from '@/components/ui/card';
 
 export const metadata: Metadata = {
-  title: 'Contact Us | Janopriyo Shop',
-  description: 'Get in touch with Janopriyo Shop for any inquiries, support, or feedback.',
+  title: 'Contact Us | BD Dukan',
+  description: 'Get in touch with BD Dukan for any inquiries, support, or feedback.',
 };
 
 async function getSettings() {
@@ -19,9 +19,9 @@ async function getSettings() {
     const settings = await GlobalSettings.findOne({ domain }).lean();
     if (!settings) {
       return {
-        brandName: "Janopriyo Shop",
+        brandName: "BD Dukan",
         contact: {
-          email: "support@janopriyo.shop",
+          email: "support@bddukan.shop",
           phone: "+8801234567890",
           address: "Dhaka, Bangladesh"
         },
@@ -147,7 +147,7 @@ export default async function ContactPage() {
                 </p>
                 <div className="aspect-video w-full rounded-2xl overflow-hidden shadow-md border bg-muted">
                     <iframe 
-                      title="Janopriyo Shop Location"
+                      title="BD Dukan Location"
                       width="100%" 
                       height="100%" 
                       style={{ border: 0 }} 

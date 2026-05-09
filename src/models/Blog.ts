@@ -34,7 +34,7 @@ const BlogSchema: Schema = new Schema(
       index: true,
       trim: true,
       lowercase: true,
-      default: 'janopriyo.com' // Safe default for existing docs
+      default: 'mibd.shop' // Safe default for existing docs
     },
     metaTitle: { 
       type: String, 

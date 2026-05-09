@@ -32,7 +32,7 @@ const BannerSchema: Schema<IBanner> = new Schema(
       index: true,
       trim: true,
       lowercase: true,
-      default: 'janopriyo.com'
+      default: 'mibd.shop'
     },
   },
   { timestamps: true }

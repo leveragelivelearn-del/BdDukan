@@ -25,7 +25,7 @@ const ReviewSchema: Schema<IReview> = new Schema(
       index: true,
       trim: true,
       lowercase: true,
-      default: 'janopriyo.com'
+      default: 'mibd.shop'
     },
     status: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' },
   },

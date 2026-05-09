@@ -127,7 +127,7 @@ export async function GET(req: NextRequest) {
       $or: [
         { status: 'approved' },
         ...(userId ? [{ user: userId, status: 'pending' }] : [])
-      ]
+      ] as any
     })
     .sort({ createdAt: -1 })
     .populate('user', 'name image');

@@ -21,7 +21,7 @@ const FAQSchema: Schema<IFAQ> = new Schema(
       index: true,
       trim: true,
       lowercase: true,
-      default: 'janopriyo.com'
+      default: 'mibd.shop'
     },
     isActive: { type: Boolean, default: true },
   },

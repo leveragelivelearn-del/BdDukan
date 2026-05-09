@@ -6,7 +6,7 @@ import { ShopHeaderSkeleton, ProductCardSkeleton } from '@/components/storefront
 import { ShopListingSelector } from '@/components/templates/ServerRegistry';
 
 export const metadata = {
-  title: 'Shop | Janopriyo Shop',
+  title: 'Shop | BD Dukan',
   description: 'Discover Products That Match Your Style. Filter by category, budget, and latest arrivals.',
 };
 

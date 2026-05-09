@@ -54,7 +54,7 @@ const UserSchema: Schema<IUser> = new Schema(
       index: true,
       trim: true,
       lowercase: true,
-      default: 'janopriyo.com'
+      default: 'mibd.shop'
     },
     password: { type: String, select: false },
     role: { type: String, enum: ['super_admin', 'admin', 'user'], default: 'user' },

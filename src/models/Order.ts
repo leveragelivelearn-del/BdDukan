@@ -107,7 +107,7 @@ const OrderSchema: Schema<IOrder> = new Schema(
       index: true,
       trim: true,
       lowercase: true,
-      default: 'janopriyo.com'
+      default: 'mibd.shop'
     },
     isSalesCounted: { type: Boolean, default: false },
     deletedAt: { type: Date, default: null },

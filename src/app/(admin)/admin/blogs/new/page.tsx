@@ -172,7 +172,7 @@ export default function CreateBlogPage() {
               <div className="space-y-2">
                 <label className="text-sm font-bold">Slug / URL path *</label>
                 <div className="flex items-center gap-2">
-                  <span className="text-xs text-muted-foreground whitespace-nowrap">janopriyo.shop/blog/</span>
+                  <span className="text-xs text-muted-foreground whitespace-nowrap">mibd.shop/blog/</span>
                   <Input
                     name="slug"
                     value={formData.slug}

@@ -5,8 +5,8 @@ import { Separator } from '@/components/ui/separator';
 import { ShieldCheck, Info, Share2, Lock, Eye, Bell } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy | Janopriyo Shop',
-  description: 'Learn how Janopriyo Shop collects, uses, and protects your personal information.',
+  title: 'Privacy Policy | BD Dukan',
+  description: 'Learn how BD Dukan collects, uses, and protects your personal information.',
 };
 
 async function getSettings() {
@@ -17,9 +17,9 @@ async function getSettings() {
     const settings = await GlobalSettings.findOne({ domain }).lean();
     if (!settings) {
       return {
-        brandName: "Janopriyo Shop",
+        brandName: "BD Dukan",
         contact: {
-          email: "support@janopriyo.shop"
+          email: "support@bddukan.shop"
         }
       };
     }
@@ -37,8 +37,8 @@ async function getSettings() {
 
 export default async function PrivacyPage() {
   const settings = await getSettings();
-  const brandName = settings.brandName || "Janopriyo Shop";
-  const contactEmail = settings.contact?.email || "support@janopriyo.shop";
+  const brandName = settings.brandName || "BD Dukan";
+  const contactEmail = settings.contact?.email || "support@bddukan.shop";
   const lastUpdated = "April 04, 2026";
 
   return (

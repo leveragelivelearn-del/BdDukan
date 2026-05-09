@@ -5,8 +5,8 @@ import { getTenantDomain } from '@/lib/tenant';
 import { BlogListingSelector } from '@/components/templates/ServerRegistry';
 
 export const metadata: Metadata = {
-  title: 'Blog | Janopriyo Shop',
-  description: 'Product ideas, commerce playbooks, and practical updates from Janopriyo Shop.',
+  title: 'Blog | BD Dukan',
+  description: 'Product ideas, commerce playbooks, and practical updates from BD Dukan.',
 };
 
 export default async function BlogListingPage({
