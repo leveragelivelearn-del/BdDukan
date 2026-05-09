@@ -42,14 +42,14 @@ export default function LoginPage() {
   const { data: session, status } = useSession();
   const searchParams = useSearchParams();
   const remoteTenant = searchParams.get('remote_tenant');
-  const hubDomain = process.env.NEXT_PUBLIC_HUB_DOMAIN || 'www.mibd.shop';
+  const hubDomain = process.env.NEXT_PUBLIC_HUB_DOMAIN || 'www.bd-dukan.com';
 
   // Force WWW in production for consistency and to avoid Auth mismatch
   useEffect(() => {
     if (typeof window !== 'undefined' && process.env.NODE_ENV === 'production') {
       const host = window.location.host;
-      if (host === 'mibd.shop') {
-        window.location.href = `https://www.mibd.shop${window.location.pathname}${window.location.search}`;
+      if (host === 'bd-dukan.com') {
+        window.location.href = `https://www.bd-dukan.com${window.location.pathname}${window.location.search}`;
       }
     }
   }, []);
@@ -80,8 +80,11 @@ export default function LoginPage() {
   async function loginWithGoogle() {
     setIsGoogleLoading(true);
     try {
-      const currentHost = window.location.host.replace('www.', '');
-      const isHub = currentHost === 'mibd.shop' || currentHost.includes('localhost');
+      const host = window.location.host;
+      const currentHost = window.location.hostname.replace(/^www\./, '');
+      const isHub = currentHost === 'bd-dukan.com' || 
+                    currentHost.endsWith('.bd-dukan.com') || 
+                    currentHost === 'localhost';
 
       if (!isHub) {
         const isProd = process.env.NODE_ENV === 'production';
