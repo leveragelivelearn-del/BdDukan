@@ -97,7 +97,7 @@ export function Testimonials() {
                     "{review.content}"
                   </p>
                   <div className="flex items-center gap-4">
-                    <Avatar className="size-12 rounded-2xl border-2 border-primary/20 shadow-lg shadow-primary/10">
+                    <Avatar className="size-12 rounded-full border-2 border-primary/20 shadow-lg shadow-primary/10">
                       <AvatarImage src={review.avatar} alt={review.name} />
                       <AvatarFallback>{review.name[0]}</AvatarFallback>
                     </Avatar>
