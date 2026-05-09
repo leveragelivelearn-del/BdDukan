@@ -28,7 +28,7 @@ const CouponSchema: Schema<ICoupon> = new Schema(
       index: true,
       trim: true,
       lowercase: true,
-      default: 'mibd.shop'
+      default: 'bd-dukan.com'
     },
     discountType: { 
       type: String, 

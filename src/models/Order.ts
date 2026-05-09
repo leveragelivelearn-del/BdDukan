@@ -112,7 +112,7 @@ const OrderSchema: Schema<IOrder> = new Schema(
       index: true,
       trim: true,
       lowercase: true,
-      default: 'mibd.shop'
+      default: 'bd-dukan.com'
     },
     isSalesCounted: { type: Boolean, default: false },
     manualPaymentDetails: {

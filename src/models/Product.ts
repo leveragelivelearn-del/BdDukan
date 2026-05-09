@@ -64,7 +64,7 @@ const ProductSchema: Schema<IProduct> = new Schema(
       index: true,
       trim: true,
       lowercase: true,
-      default: 'mibd.shop'
+      default: 'bd-dukan.com'
     },
     stock: { type: Number, required: true, default: 0, min: [0, 'Stock cannot be negative'] },
     categories: [{ type: Schema.Types.ObjectId, ref: 'Category' }],

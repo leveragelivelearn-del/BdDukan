@@ -8,7 +8,7 @@ export function generateOrganizationSchema(settings: any) {
     '@context': 'https://schema.org',
     '@type': 'Organization',
     name: settings.brandName || 'BD Dukan',
-    url: process.env.NEXTAUTH_URL || 'https://www.mibd.shop',
+    url: process.env.NEXTAUTH_URL || 'https://www.bd-dukan.com',
     logo: settings.logo,
     contactPoint: {
       '@type': 'ContactPoint',

@@ -32,7 +32,7 @@ const BannerSchema: Schema<IBanner> = new Schema(
       index: true,
       trim: true,
       lowercase: true,
-      default: 'mibd.shop'
+      default: 'bd-dukan.com'
     },
   },
   { timestamps: true }

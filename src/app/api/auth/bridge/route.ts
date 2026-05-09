@@ -47,7 +47,7 @@ export async function GET(req: NextRequest) {
 
     // Re-encode the token for a long-term session (30 days)
     const { encode } = await import('next-auth/jwt');
-    // Re-encode with THIS tenant's salt (cookie name) so Auth.js on mibd.shop can read it
+    // Re-encode with THIS tenant's salt (cookie name) so Auth.js on bd-dukan.com can read it
     const sessionToken = await encode({
       token: {
         id: decoded.id,

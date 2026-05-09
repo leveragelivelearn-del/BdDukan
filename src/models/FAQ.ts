@@ -21,7 +21,7 @@ const FAQSchema: Schema<IFAQ> = new Schema(
       index: true,
       trim: true,
       lowercase: true,
-      default: 'mibd.shop'
+      default: 'bd-dukan.com'
     },
     isActive: { type: Boolean, default: true },
   },
