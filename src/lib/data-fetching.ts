@@ -75,8 +75,8 @@ export const getTrendingProducts = (domain: string, limit = 10) => {
       ]);
 
       const topSellingIds = topSellingItems.map(item => item._id);
-      
-      let trendingProducts = await Product.find({ 
+
+      let trendingProducts = await Product.find({
         _id: { $in: topSellingIds },
         isPublished: true,
         domain
@@ -98,10 +98,10 @@ export const getTrendingProducts = (domain: string, limit = 10) => {
           domain,
           ratings: { $gt: 0 }
         })
-        .populate('categories')
-        .sort({ ratings: -1, numReviews: -1 } as any)
-        .limit(remaining)
-        .lean();
+          .populate('categories')
+          .sort({ ratings: -1, numReviews: -1 } as any)
+          .limit(remaining)
+          .lean();
         trendingProducts = [...trendingProducts, ...topRated] as any;
       }
 
@@ -114,10 +114,10 @@ export const getTrendingProducts = (domain: string, limit = 10) => {
           domain,
           views: { $gt: 0 }
         })
-        .populate('categories')
-        .sort({ views: -1 } as any)
-        .limit(remaining)
-        .lean();
+          .populate('categories')
+          .sort({ views: -1 } as any)
+          .limit(remaining)
+          .lean();
         trendingProducts = [...trendingProducts, ...topViewed] as any;
       }
 
@@ -129,10 +129,10 @@ export const getTrendingProducts = (domain: string, limit = 10) => {
           isPublished: true,
           domain
         })
-        .populate('categories')
-        .sort({ createdAt: -1 } as any)
-        .limit(remaining)
-        .lean();
+          .populate('categories')
+          .sort({ createdAt: -1 } as any)
+          .limit(remaining)
+          .lean();
         trendingProducts = [...trendingProducts, ...latest] as any;
       }
 
@@ -235,11 +235,11 @@ export const getCachedSettings = (hostname: string = 'localhost') => {
   return unstable_cache(
     async () => {
       await connectToDatabase();
-      
+
       // Find settings for this specific domain
       // If not found, fallback to the 'main' store or first record
       let settings = await GlobalSettings.findOne({ domain }).lean();
-      
+
       if (!settings) {
         settings = await GlobalSettings.findOne({ storeId: 'main' }).lean() || await GlobalSettings.findOne().lean();
       }
@@ -257,10 +257,10 @@ export const getCachedActiveCoupon = (domain: string) => {
   return unstable_cache(
     async () => {
       await connectToDatabase();
-      const coupon = await Coupon.findOne({ 
-        isActive: true, 
+      const coupon = await Coupon.findOne({
+        isActive: true,
         domain,
-        expiryDate: { $gt: new Date() } 
+        expiryDate: { $gt: new Date() }
       }).sort({ createdAt: -1 }).lean();
       return serialize(coupon);
     },
