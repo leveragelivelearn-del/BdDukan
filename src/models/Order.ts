@@ -45,6 +45,11 @@ export interface IOrder extends Document {
   };
   domain: string;
   isSalesCounted?: boolean;
+  manualPaymentDetails?: {
+    methodName?: string;
+    senderNumber?: string;
+    transactionId?: string;
+  };
   createdAt: Date;
   updatedAt: Date;
   deletedAt?: Date | null;
@@ -110,6 +115,11 @@ const OrderSchema: Schema<IOrder> = new Schema(
       default: 'mibd.shop'
     },
     isSalesCounted: { type: Boolean, default: false },
+    manualPaymentDetails: {
+      methodName: { type: String },
+      senderNumber: { type: String },
+      transactionId: { type: String },
+    },
     deletedAt: { type: Date, default: null },
   },
   { timestamps: true }

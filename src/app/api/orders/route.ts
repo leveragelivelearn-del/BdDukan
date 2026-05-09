@@ -57,6 +57,11 @@ const orderSchema = z.object({
   deliveryCharge: z.number().min(0).nullish(),
   useWallet: z.boolean().nullish().default(false),
   couponCode: z.string().nullish(),
+  manualPaymentDetails: z.object({
+    methodName: z.string().optional(),
+    senderNumber: z.string().optional(),
+    transactionId: z.string().optional(),
+  }).optional(),
 });
 
 export async function POST(req: NextRequest) {
@@ -76,7 +81,7 @@ export async function POST(req: NextRequest) {
       }, { status: 400 });
     }
 
-    const { items, shippingAddress, paymentMethod, useWallet, couponCode } = validation.data;
+    const { items, shippingAddress, paymentMethod, useWallet, couponCode, manualPaymentDetails } = validation.data;
     const clientProvidedDeliveryCharge = validation.data.deliveryCharge;
 
     const domain = await getTenantDomain();
@@ -352,6 +357,7 @@ export async function POST(req: NextRequest) {
           transactionId: paymentMethod === 'Online' ? `ORDER-${crypto.randomUUID().replace(/-/g, '').toUpperCase().slice(0, 16)}` : undefined,
           shortId: crypto.randomBytes(4).toString('hex').toUpperCase(),
           domain, // MUST set the domain
+          manualPaymentDetails,
         },
       ],
       { session }

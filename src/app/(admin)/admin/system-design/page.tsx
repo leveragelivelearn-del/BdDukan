@@ -405,7 +405,7 @@ export default function SuperConfigPage() {
            </CardContent>
         </Card>
 
-        {/* 4. Courier Logistics */}
+         {/* 4. Courier Logistics */}
         <Card className="lg:col-span-3 border-2 border-orange-500/20 shadow-none overflow-hidden rounded-3xl">
            <CardHeader className="bg-orange-500/5 border-b">
               <CardTitle className="flex items-center gap-2">
@@ -453,6 +453,191 @@ export default function SuperConfigPage() {
               </div>
            </CardContent>
         </Card>
+
+        {/* 5. Payment Gateway Configuration */}
+        <Card className="lg:col-span-3 border-2 border-blue-500/20 shadow-none overflow-hidden rounded-3xl">
+           <CardHeader className="bg-blue-500/5 border-b">
+              <CardTitle className="flex items-center gap-2">
+                 <CreditCard className="h-5 w-5 text-blue-600" /> Payment Gateway (SSLCommerz)
+              </CardTitle>
+           </CardHeader>
+           <CardContent className="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="md:col-span-1 space-y-4">
+                  <div className="space-y-2">
+                    <Label className="font-bold">Active Payment Method</Label>
+                    <Select 
+                      value={settings?.paymentConfig?.activeMethod || 'none'} 
+                      onValueChange={(v) => setSettings({
+                        ...settings, 
+                        paymentConfig: {
+                          ...(settings?.paymentConfig || {}), 
+                          activeMethod: v
+                        }
+                      })}
+                    >
+                      <SelectTrigger className="h-12 rounded-xl"><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="none">None (Cash on Delivery Only)</SelectItem>
+                        <SelectItem value="sslcommerz">SSLCommerz</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="flex items-center space-x-2 pt-4">
+                    <input 
+                      type="checkbox" 
+                      id="is-sandbox"
+                      checked={settings?.paymentConfig?.sslcommerz?.isSandbox ?? true}
+                      onChange={(e) => setSettings({
+                        ...settings, 
+                        paymentConfig: {
+                          ...(settings?.paymentConfig || {}),
+                          sslcommerz: {
+                            ...(settings?.paymentConfig?.sslcommerz || {}),
+                            isSandbox: e.target.checked
+                          }
+                        }
+                      })}
+                      className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    />
+                    <Label htmlFor="is-sandbox" className="font-bold text-sm">Enable Sandbox Mode</Label>
+                  </div>
+              </div>
+
+              <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4 bg-muted/20 p-4 rounded-2xl border">
+                 <div className="md:col-span-2 font-black text-xs uppercase opacity-50 mb-2">SSLCommerz Credentials</div>
+                  <div className="space-y-2">
+                    <Label htmlFor="ssl-store-id" className="font-bold text-xs">Store ID</Label>
+                    <input 
+                      id="ssl-store-id" 
+                      value={settings?.paymentConfig?.sslcommerz?.storeId || ''} 
+                      onChange={(e) => setSettings({
+                        ...settings, 
+                        paymentConfig: {
+                          ...(settings?.paymentConfig || {}),
+                          sslcommerz: {
+                            ...(settings?.paymentConfig?.sslcommerz || {}),
+                            storeId: e.target.value
+                          }
+                        }
+                      })} 
+                      className="w-full h-10 rounded-lg border px-3 text-xs" 
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="ssl-store-passwd" className="font-bold text-xs">Store Password</Label>
+                    <input 
+                      id="ssl-store-passwd" 
+                      type="password"
+                      value={settings?.paymentConfig?.sslcommerz?.storePassword || ''} 
+                      onChange={(e) => setSettings({
+                        ...settings, 
+                        paymentConfig: {
+                          ...(settings?.paymentConfig || {}),
+                          sslcommerz: {
+                            ...(settings?.paymentConfig?.sslcommerz || {}),
+                            storePassword: e.target.value
+                          }
+                        }
+                      })} 
+                      className="w-full h-10 rounded-lg border px-3 text-xs" 
+                      placeholder="Enter Password"
+                    />
+                  </div>
+              </div>
+           </CardContent>
+        </Card>
+
+        {/* 6. Manual Payment Configuration (Mobile Banking) */}
+        <Card className="lg:col-span-3 border-2 border-pink-500/20 shadow-none overflow-hidden rounded-3xl">
+           <CardHeader className="bg-pink-500/5 border-b">
+              <CardTitle className="flex items-center gap-2">
+                 <CreditCard className="h-5 w-5 text-pink-600" /> Manual Payment (Mobile Banking)
+              </CardTitle>
+           </CardHeader>
+           <CardContent className="p-6 space-y-8">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {['bkash', 'nagad', 'rocket'].map((method) => (
+                  <div key={method} className="space-y-4 p-4 rounded-2xl border bg-muted/10">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <img src={`/assets/${method}logo.webp`} alt={method} className="h-6 w-6 object-contain" />
+                        <Label className="font-bold capitalize">{method}</Label>
+                      </div>
+                      <input 
+                        type="checkbox" 
+                        checked={settings?.manualPaymentConfig?.[method]?.active ?? false}
+                        onChange={(e) => setSettings({
+                          ...settings,
+                          manualPaymentConfig: {
+                            ...(settings?.manualPaymentConfig || {}),
+                            [method]: {
+                              ...(settings?.manualPaymentConfig?.[method] || {}),
+                              active: e.target.checked
+                            }
+                          }
+                        })}
+                        className="h-4 w-4"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-[10px] uppercase opacity-60">Number</Label>
+                      <input 
+                        type="text"
+                        value={settings?.manualPaymentConfig?.[method]?.number || ''}
+                        onChange={(e) => setSettings({
+                          ...settings,
+                          manualPaymentConfig: {
+                            ...(settings?.manualPaymentConfig || {}),
+                            [method]: {
+                              ...(settings?.manualPaymentConfig?.[method] || {}),
+                              number: e.target.value
+                            }
+                          }
+                        })}
+                        placeholder="017XXXXXXXX"
+                        className="w-full h-10 rounded-lg border px-3 text-sm"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-[10px] uppercase opacity-60">QR Code URL</Label>
+                      <input 
+                        type="text"
+                        value={settings?.manualPaymentConfig?.[method]?.qrCode || ''}
+                        onChange={(e) => setSettings({
+                          ...settings,
+                          manualPaymentConfig: {
+                            ...(settings?.manualPaymentConfig || {}),
+                            [method]: {
+                              ...(settings?.manualPaymentConfig?.[method] || {}),
+                              qrCode: e.target.value
+                            }
+                          }
+                        })}
+                        placeholder="https://imgbb.com/..."
+                        className="w-full h-10 rounded-lg border px-3 text-sm text-[10px]"
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="space-y-2">
+                <Label className="font-bold">Payment Instructions</Label>
+                <textarea 
+                  value={settings?.manualPaymentConfig?.instructions || ''}
+                  onChange={(e) => setSettings({
+                    ...settings,
+                    manualPaymentConfig: {
+                      ...(settings?.manualPaymentConfig || {}),
+                      instructions: e.target.value
+                    }
+                  })}
+                  className="w-full h-24 rounded-xl border p-4 text-sm resize-none"
+                  placeholder="Instructions for the user..."
+                />
+              </div>
+           </CardContent>
+        </Card>
+
         {/* NEW: SaaS Subscription Control */}
         <Card className="lg:col-span-1 border-2 border-red-500/20 shadow-none overflow-hidden rounded-3xl">
            <CardHeader className="bg-red-500/5 border-b">

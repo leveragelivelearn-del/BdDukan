@@ -58,6 +58,12 @@ export interface IGlobalSettings extends Document {
       isSandbox: boolean;
     };
   };
+  manualPaymentConfig?: {
+    bkash?: { number: string; qrCode?: string; active: boolean };
+    nagad?: { number: string; qrCode?: string; active: boolean };
+    rocket?: { number: string; qrCode?: string; active: boolean };
+    instructions?: string;
+  };
   googleAnalyticsId?: string; // GA4 Property ID
   googleSearchConsoleId?: string; // Search Console Site URL (e.g. https://www.example.com/ or sc-domain:example.com)
   aiConfig?: {
@@ -155,6 +161,24 @@ const GlobalSettingsSchema: Schema<IGlobalSettings> = new Schema(
         storePassword: { type: String, get: decrypt, set: encrypt },
         isSandbox: { type: Boolean, default: true }
       }
+    },
+    manualPaymentConfig: {
+      bkash: { 
+        number: String, 
+        qrCode: String, 
+        active: { type: Boolean, default: false } 
+      },
+      nagad: { 
+        number: String, 
+        qrCode: String, 
+        active: { type: Boolean, default: false } 
+      },
+      rocket: { 
+        number: String, 
+        qrCode: String, 
+        active: { type: Boolean, default: false } 
+      },
+      instructions: { type: String, default: 'Please send the money to any of the numbers below and provide the transaction ID.' }
     },
     googleAnalyticsId: { type: String },
     googleSearchConsoleId: { type: String },

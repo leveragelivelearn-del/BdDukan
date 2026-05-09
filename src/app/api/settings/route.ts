@@ -122,7 +122,8 @@ export async function POST(req: NextRequest) {
       'metaPixelId',
       'facebookAccessToken',
       'facebookTestEventCode',
-      'saasSubscription'
+      'saasSubscription',
+      'manualPaymentConfig'
     ];
 
     const isSuperAdmin = (session.user as any).role === 'super_admin';

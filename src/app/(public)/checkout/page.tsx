@@ -32,6 +32,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 const checkoutSchema = z.object({
   fullName: z.string().min(2, 'Full name is required'),
@@ -41,7 +49,7 @@ const checkoutSchema = z.object({
   division: z.string().min(1, 'Division is required'),
   district: z.string().min(1, 'District is required'),
   thana: z.string().min(1, 'Thana is required'),
-  paymentMethod: z.enum(['COD', 'Online'], {
+  paymentMethod: z.enum(['COD', 'Online', 'Manual'], {
     message: 'Select a payment method'
   }),
 });
@@ -60,6 +68,12 @@ export default function CheckoutPage() {
   const [couponDiscount, setCouponDiscount] = useState(0);
   const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null);
   const [applyingCoupon, setApplyingCoupon] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [selectedMethod, setSelectedMethod] = useState<any>(null);
+  const [manualDetails, setManualDetails] = useState({
+    senderNumber: '',
+    transactionId: ''
+  });
 
   const form = useForm<CheckoutValues>({
     resolver: zodResolver(checkoutSchema),
@@ -74,6 +88,15 @@ export default function CheckoutPage() {
       paymentMethod: 'COD',
     },
   });
+
+  // Reset manual payment details if payment method changes away from Manual
+  useEffect(() => {
+    const method = form.watch('paymentMethod');
+    if (method !== 'Manual') {
+      setSelectedMethod(null);
+      setManualDetails({ senderNumber: '', transactionId: '' });
+    }
+  }, [form.watch('paymentMethod')]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const selectedDivision = form.watch('division');
   const selectedDistrict = form.watch('district');
@@ -162,6 +185,11 @@ export default function CheckoutPage() {
         deliveryCharge: deliveryCharge,
         useWallet: useWallet,
         couponCode: appliedCoupon || undefined,
+        manualPaymentDetails: values.paymentMethod === 'Manual' ? {
+          methodName: selectedMethod?.id,
+          senderNumber: manualDetails.senderNumber,
+          transactionId: manualDetails.transactionId
+        } : undefined
       };
 
       const response = await fetch('/api/orders', {
@@ -293,7 +321,8 @@ export default function CheckoutPage() {
     watchedFields.street?.trim() && 
     watchedFields.division && 
     watchedFields.district && 
-    watchedFields.thana
+    watchedFields.thana &&
+    (watchedFields.paymentMethod !== 'Manual' || (selectedMethod?.id && manualDetails.senderNumber && manualDetails.transactionId))
   );
 
   const potentialReward = (profile?.isSubscriptionActive && settings?.subscriptionConfig)
@@ -672,22 +701,76 @@ export default function CheckoutPage() {
                                 <p className="text-xs font-normal text-muted-foreground mt-1">Pay when you receive the product.</p>
                               </FormLabel>
                             </FormItem>
-                            <FormItem className="flex items-center space-x-3 space-y-0 border rounded-lg p-4 cursor-pointer hover:bg-muted/50 transition-colors">
-                              <FormControl>
-                                <RadioGroupItem value="Online" />
-                              </FormControl>
-                              <FormLabel className="font-bold flex-1 cursor-pointer">
-                                Online Payment (SSLCommerz)
-                                <p className="text-xs font-normal text-muted-foreground mt-1">Pay securely via Credit Card, bKash, or Rocket.</p>
-                                <Badge variant="secondary" className="mt-2 text-[10px]">Recommended</Badge>
-                              </FormLabel>
-                            </FormItem>
+                            {settings?.paymentConfig?.activeMethod === 'sslcommerz' && (
+                              <FormItem className="flex items-center space-x-3 space-y-0 border rounded-lg p-4 cursor-pointer hover:bg-muted/50 transition-colors">
+                                <FormControl>
+                                  <RadioGroupItem value="Online" />
+                                </FormControl>
+                                <FormLabel className="font-bold flex-1 cursor-pointer">
+                                  Online Payment (SSLCommerz)
+                                  <p className="text-xs font-normal text-muted-foreground mt-1">Pay securely via Credit Card, bKash, or Rocket.</p>
+                                  <Badge variant="secondary" className="mt-2 text-[10px]">Recommended</Badge>
+                                </FormLabel>
+                              </FormItem>
+                            )}
+
+                            {(settings?.manualPaymentConfig?.bkash?.active || 
+                              settings?.manualPaymentConfig?.nagad?.active || 
+                              settings?.manualPaymentConfig?.rocket?.active) && (
+                              <FormItem className="flex items-center space-x-3 space-y-0 border rounded-lg p-4 cursor-pointer hover:bg-muted/50 transition-colors">
+                                <FormControl>
+                                  <RadioGroupItem value="Manual" />
+                                </FormControl>
+                                <FormLabel className="font-bold flex-1 cursor-pointer">
+                                  Manual Payment (bKash/Nagad/Rocket)
+                                  <p className="text-xs font-normal text-muted-foreground mt-1">Send money manually and provide transaction details.</p>
+                                </FormLabel>
+                              </FormItem>
+                            )}
                           </RadioGroup>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
+
+                  {/* Manual Payment Option Selection (Cards) */}
+                  {form.watch('paymentMethod') === 'Manual' && settings?.manualPaymentConfig && (
+                    <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4 animate-in fade-in slide-in-from-top duration-300">
+                      {['bkash', 'nagad', 'rocket'].map((method) => {
+                        const config = settings.manualPaymentConfig[method];
+                        if (!config?.active) return null;
+                        const isSelected = selectedMethod?.id === method;
+                        return (
+                          <div 
+                            key={method} 
+                            onClick={() => {
+                              setSelectedMethod({ id: method, ...config });
+                              setShowPaymentModal(true);
+                            }}
+                            className={`p-4 rounded-xl border-2 transition-all cursor-pointer flex flex-col items-center gap-2 hover:bg-muted/50 ${
+                              isSelected ? 'border-primary bg-primary/5' : 'border-muted'
+                            }`}
+                          >
+                            <img src={`/assets/${method}logo.webp`} alt={method} className="h-8 w-auto" />
+                            <p className="text-[10px] font-bold uppercase">{method}</p>
+                            {isSelected && (
+                              <div className="text-[8px] font-bold text-primary flex items-center gap-1 mt-1">
+                                <CheckCircle2 className="h-2 w-2" /> Details Added
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                  
+                  {/* Validation Message for Manual Payment */}
+                  {form.watch('paymentMethod') === 'Manual' && !selectedMethod?.id && (
+                    <p className="text-[10px] text-destructive font-bold text-center mt-2 animate-pulse">
+                      Please select a provider and provide payment details!
+                    </p>
+                  )}
 
                   {profile && profile.walletBalance > 0 && (
                     <div className="p-4 border rounded-lg bg-primary/5 border-primary/20">
@@ -734,6 +817,98 @@ export default function CheckoutPage() {
           </Form>
         </div>
       </div>
+
+      {/* Manual Payment Verification Modal */}
+      <Dialog open={showPaymentModal} onOpenChange={setShowPaymentModal}>
+        <DialogContent className="sm:max-w-[425px] rounded-3xl p-0 overflow-hidden border-none shadow-2xl">
+          <DialogHeader className="p-8 bg-gradient-to-br from-primary to-primary/80 text-white relative">
+            <div className="flex items-center gap-4">
+              <div className="h-16 w-16 bg-white rounded-2xl p-2 shadow-lg flex items-center justify-center">
+                <img src={`/assets/${selectedMethod?.id}logo.webp`} alt={selectedMethod?.id} className="h-full w-auto object-contain" />
+              </div>
+              <div className="text-left">
+                <DialogTitle className="text-2xl font-black uppercase tracking-tighter">Pay via {selectedMethod?.id}</DialogTitle>
+                <DialogDescription className="text-white/80 text-xs font-bold">Follow the steps below to complete payment.</DialogDescription>
+              </div>
+            </div>
+          </DialogHeader>
+
+          <div className="p-8 space-y-6">
+            {/* Payment Info */}
+            <div className="bg-primary/5 rounded-2xl p-6 border-2 border-primary/10 space-y-4">
+              <div className="flex justify-between items-center">
+                <span className="text-[10px] font-black uppercase tracking-widest opacity-50">Send Money To</span>
+                <Badge variant="secondary" className="bg-primary/10 text-primary border-none font-bold">Personal Number</Badge>
+              </div>
+              <div className="flex items-center justify-between gap-4">
+                <p className="text-2xl font-black tracking-widest text-primary">{selectedMethod?.number}</p>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="h-8 rounded-full text-[10px] font-bold border-2"
+                  onClick={() => {
+                    navigator.clipboard.writeText(selectedMethod?.number);
+                    toast.success('Number copied to clipboard!');
+                  }}
+                >
+                  Copy
+                </Button>
+              </div>
+              
+              {selectedMethod?.qrCode && (
+                <div className="flex flex-col items-center gap-2 pt-2 border-t border-primary/10">
+                  <p className="text-[10px] font-bold uppercase opacity-40">Or Scan QR Code</p>
+                  <div className="p-2 bg-white rounded-xl shadow-sm border">
+                    <img src={selectedMethod.qrCode} alt="QR" className="h-32 w-32 object-contain" />
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Verification Fields */}
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label className="text-xs font-black uppercase opacity-60">Your Mobile Number</Label>
+                <Input 
+                  placeholder="The number you paid from" 
+                  value={manualDetails.senderNumber}
+                  onChange={(e) => setManualDetails({...manualDetails, senderNumber: e.target.value})}
+                  className="h-12 rounded-xl focus:ring-primary/20"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-xs font-black uppercase opacity-60">Transaction ID (TrxID)</Label>
+                <Input 
+                  placeholder="e.g. 8N7A6D5C" 
+                  value={manualDetails.transactionId}
+                  onChange={(e) => setManualDetails({...manualDetails, transactionId: e.target.value.toUpperCase()})}
+                  className="h-12 rounded-xl focus:ring-primary/20"
+                />
+              </div>
+            </div>
+
+            <div className="p-4 bg-muted/30 rounded-xl">
+                <p className="text-[10px] leading-relaxed text-muted-foreground italic">
+                   <strong>Instructions:</strong> {settings?.manualPaymentConfig?.instructions || 'Please send the exact order amount.'}
+                </p>
+            </div>
+          </div>
+
+          <DialogFooter className="p-8 bg-muted/20 border-t flex flex-col sm:flex-row gap-3">
+            <Button variant="outline" onClick={() => setShowPaymentModal(false)} className="rounded-full h-12 flex-1 font-bold">Cancel</Button>
+            <Button 
+              disabled={!manualDetails.senderNumber || !manualDetails.transactionId}
+              onClick={() => {
+                setShowPaymentModal(false);
+                toast.success(`${selectedMethod?.id.toUpperCase()} details saved!`);
+              }} 
+              className="rounded-full h-12 flex-1 font-black uppercase tracking-widest shadow-lg shadow-primary/20"
+            >
+              Confirm Payment
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

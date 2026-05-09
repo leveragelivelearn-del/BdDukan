@@ -210,6 +210,26 @@ export default function OrderDetailsDialog({
                       <code className="bg-muted px-2 py-1 rounded text-[10px] break-all">{order.transactionId}</code>
                     </div>
                   )}
+
+                  {order.paymentMethod === 'Manual' && order.manualPaymentDetails && (
+                    <div className="mt-3 p-3 bg-primary/5 rounded-xl border border-primary/20 space-y-2">
+                       <p className="text-[10px] font-black uppercase text-primary tracking-widest">Manual Verification</p>
+                       <div className="grid grid-cols-2 gap-2 text-[11px]">
+                          <div>
+                             <span className="text-muted-foreground block">Method:</span>
+                             <span className="font-bold uppercase">{order.manualPaymentDetails.methodName}</span>
+                          </div>
+                          <div>
+                             <span className="text-muted-foreground block">Sender No:</span>
+                             <span className="font-bold">{order.manualPaymentDetails.senderNumber}</span>
+                          </div>
+                          <div className="col-span-2">
+                             <span className="text-muted-foreground block">TrxID:</span>
+                             <code className="font-bold text-primary bg-white px-1.5 py-0.5 rounded border">{order.manualPaymentDetails.transactionId}</code>
+                          </div>
+                       </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
