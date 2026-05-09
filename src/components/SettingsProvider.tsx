@@ -30,8 +30,8 @@ export function SettingsProvider({
 
 export function useSettings() {
   const context = useContext(SettingsContext);
-  if (context === undefined) {
-    // Return empty settings instead of throwing to avoid breaking things if used outside
+  if (context === undefined || context === null) {
+    // Return empty settings instead of throwing or returning null
     return {} as SettingsContextType;
   }
   return context;
