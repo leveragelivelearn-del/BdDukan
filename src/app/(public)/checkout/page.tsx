@@ -8,6 +8,7 @@ import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { addToCart, removeFromCart, clearCart } from '@/store/slices/cartSlice';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Label } from '@/components/ui/label';
 import {
   Form,
   FormControl,

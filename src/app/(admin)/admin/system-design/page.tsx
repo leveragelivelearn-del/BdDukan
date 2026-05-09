@@ -28,6 +28,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { ImageUpload } from '@/components/ui/image-upload';
 
 
 
@@ -204,101 +205,175 @@ export default function SuperConfigPage() {
         </div>
       </div>
 
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Left Column: Brand Identity (Spans 2 columns) */}
+        <div className="lg:col-span-2">
+          <Card className="h-full border-none shadow-2xl bg-white/80 backdrop-blur-xl overflow-hidden">
+            <CardHeader className="bg-gradient-to-r from-orange-500 to-red-600 text-white pb-8">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-white/20 rounded-lg">
+                  <Settings2 className="w-6 h-6" />
+                </div>
+                <div>
+                  <CardTitle className="text-2xl font-bold">Brand Identity & Typography</CardTitle>
+                  <CardDescription className="text-orange-100">Configure your brand name, logo and fonts</CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="p-8 space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {/* Brand Name */}
+                <div className="space-y-3">
+                  <Label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                    <ShieldCheck className="w-4 h-4 text-orange-500" />
+                    Brand Name
+                  </Label>
+                  <input 
+                    type="text"
+                    value={settings?.brandName || ''}
+                    onChange={(e) => updateGeneralSetting('brandName', e.target.value)}
+                    className="w-full h-12 px-4 rounded-xl bg-gray-50 border-2 border-gray-100 focus:border-orange-500 focus:ring-0 transition-all outline-none"
+                    placeholder="Enter brand name"
+                  />
+                </div>
+
+                {/* Logo Upload */}
+                <div className="space-y-3">
+                  <Label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                    <Monitor className="w-4 h-4 text-orange-500" />
+                    Store Logo
+                  </Label>
+                  <div className="flex items-center gap-4">
+                    {settings?.logoUrl && (
+                      <div className="h-12 w-12 rounded-xl border bg-white p-1 flex items-center justify-center overflow-hidden shrink-0">
+                        <img src={settings.logoUrl} alt="Logo" className="max-h-full max-w-full object-contain" />
+                      </div>
+                    )}
+                    <div className="flex-1">
+                      <ImageUpload 
+                        onUpload={(url) => updateGeneralSetting('logoUrl', url)} 
+                        className="h-12 rounded-xl border-2 border-dashed border-gray-200 hover:border-orange-500 transition-colors"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Logo Font */}
+                <div className="space-y-3">
+                  <Label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                    <Code className="w-4 h-4 text-orange-500" />
+                    Logo Typography
+                  </Label>
+                  <Select 
+                    value={settings?.uiTemplates?.logoFont || 'orbitron'} 
+                    onValueChange={(v) => updateTemplate('logoFont', v)}
+                  >
+                    <SelectTrigger className="h-12 rounded-xl bg-gray-50 border-2 border-gray-100 focus:border-orange-500 transition-all">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="rounded-2xl min-w-[300px] max-h-[450px] shadow-2xl border-2 border-orange-500/10">
+                      {FONT_OPTIONS.map(f => (
+                        <SelectItem key={f.id} value={f.id} className="rounded-xl py-3 focus:bg-orange-50 transition-colors">
+                          <span className="font-medium text-sm">{f.label}</span>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Body Font */}
+                <div className="space-y-3">
+                  <Label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                    <Layout className="w-4 h-4 text-orange-500" />
+                    Body Typography
+                  </Label>
+                  <Select 
+                    value={settings?.uiTemplates?.bodyFont || 'inter'} 
+                    onValueChange={(v) => updateTemplate('bodyFont', v)}
+                  >
+                    <SelectTrigger className="h-12 rounded-xl bg-gray-50 border-2 border-gray-100 focus:border-orange-500 transition-all">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="rounded-2xl min-w-[300px] max-h-[450px] shadow-2xl border-2 border-orange-500/10">
+                      {FONT_OPTIONS.map(f => (
+                        <SelectItem key={f.id} value={f.id} className="rounded-xl py-3 focus:bg-orange-50 transition-colors">
+                          <span className="font-medium text-sm">{f.label}</span>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Right Column: SaaS Subscription Control (Spans 1 column) */}
+        <div className="lg:col-span-1">
+          <Card className="h-full border-2 border-red-500/20 shadow-none overflow-hidden rounded-3xl bg-white/50 backdrop-blur-sm">
+            <CardHeader className="bg-red-500/5 border-b">
+                <CardTitle className="flex items-center gap-2 text-red-700">
+                  <CreditCard className="h-5 w-5" /> Subscription Control
+                </CardTitle>
+            </CardHeader>
+            <CardContent className="p-6 space-y-6">
+                <div className="space-y-2">
+                  <Label htmlFor="sub-expiry" className="font-bold text-xs text-gray-600">Expiry Date & Time</Label>
+                  <input 
+                    id="sub-expiry" 
+                    type="datetime-local" 
+                    value={(() => {
+                      if (!settings?.saasSubscription?.expiryDate) return '';
+                      const date = new Date(settings.saasSubscription.expiryDate);
+                      const year = date.getFullYear();
+                      const month = String(date.getMonth() + 1).padStart(2, '0');
+                      const day = String(date.getDate()).padStart(2, '0');
+                      const hours = String(date.getHours()).padStart(2, '0');
+                      const minutes = String(date.getMinutes()).padStart(2, '0');
+                      return `${year}-${month}-${day}T${hours}:${minutes}`;
+                    })()}
+                    onChange={(e) => {
+                      const localDate = new Date(e.target.value);
+                      setSettings({
+                        ...(settings ?? {}), 
+                        saasSubscription: {
+                          ...(settings?.saasSubscription || {}),
+                          expiryDate: localDate.toISOString()
+                        }
+                      });
+                    }} 
+                    className="w-full h-12 rounded-xl border-2 bg-white px-4 text-sm focus:border-red-500 outline-none transition-all" 
+                  />
+                  <p className="text-[10px] text-muted-foreground italic">Set when the tenant's access will automatically expire.</p>
+                </div>
+                <div className="space-y-2">
+                  <Label className="font-bold text-xs text-gray-600">Access Status</Label>
+                  <Select 
+                    value={settings?.saasSubscription?.status || 'Active'} 
+                    onValueChange={(v) => setSettings({
+                      ...settings, 
+                      saasSubscription: {
+                        ...(settings?.saasSubscription || {}),
+                        status: v
+                      }
+                    })}
+                  >
+                    <SelectTrigger className="h-12 rounded-xl border-2 bg-white focus:border-red-500 transition-all">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="rounded-xl">
+                      <SelectItem value="Active">Active (Live)</SelectItem>
+                      <SelectItem value="Expired">Expired (Blocked)</SelectItem>
+                      <SelectItem value="Suspended">Suspended (Manual Block)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        
-        {/* Brand Identity & Typography */}
-        <Card className="border-none shadow-2xl bg-white/80 backdrop-blur-xl overflow-hidden">
-          <CardHeader className="bg-gradient-to-r from-orange-500 to-red-600 text-white pb-8">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-white/20 rounded-lg">
-                <Settings2 className="w-6 h-6" />
-              </div>
-              <div>
-                <CardTitle className="text-2xl font-bold">Brand Identity & Typography</CardTitle>
-                <CardDescription className="text-orange-100">Configure your brand name, logo and fonts</CardDescription>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent className="p-8 space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {/* Brand Name */}
-              <div className="space-y-3">
-                <Label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                  <ShieldCheck className="w-4 h-4 text-orange-500" />
-                  Brand Name
-                </Label>
-                <input 
-                  type="text"
-                  value={settings?.brandName || ''}
-                  onChange={(e) => updateGeneralSetting('brandName', e.target.value)}
-                  className="w-full h-12 px-4 rounded-xl bg-gray-50 border-2 border-gray-100 focus:border-orange-500 focus:ring-0 transition-all outline-none"
-                  placeholder="Enter brand name"
-                />
-              </div>
-
-              {/* Logo URL */}
-              <div className="space-y-3">
-                <Label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                  <Monitor className="w-4 h-4 text-orange-500" />
-                  Logo URL
-                </Label>
-                <input 
-                  type="text"
-                  value={settings?.logoUrl || ''}
-                  onChange={(e) => updateGeneralSetting('logoUrl', e.target.value)}
-                  className="w-full h-12 px-4 rounded-xl bg-gray-50 border-2 border-gray-100 focus:border-orange-500 focus:ring-0 transition-all outline-none"
-                  placeholder="/logo.png"
-                />
-              </div>
-
-              {/* Logo Font */}
-              <div className="space-y-3">
-                <Label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                  <Code className="w-4 h-4 text-orange-500" />
-                  Logo Typography
-                </Label>
-                <Select 
-                  value={settings?.uiTemplates?.logoFont || 'orbitron'} 
-                  onValueChange={(v) => updateTemplate('logoFont', v)}
-                >
-                  <SelectTrigger className="h-12 rounded-xl bg-gray-50 border-2 border-gray-100 focus:border-orange-500 transition-all">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent className="rounded-2xl min-w-[300px] max-h-[450px] shadow-2xl border-2 border-orange-500/10">
-                    {FONT_OPTIONS.map(f => (
-                      <SelectItem key={f.id} value={f.id} className="rounded-xl py-3 focus:bg-orange-50 transition-colors">
-                        <span className="font-medium text-sm">{f.label}</span>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Body Font */}
-              <div className="space-y-3">
-                <Label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                  <Layout className="w-4 h-4 text-orange-500" />
-                  Body Typography
-                </Label>
-                <Select 
-                  value={settings?.uiTemplates?.bodyFont || 'inter'} 
-                  onValueChange={(v) => updateTemplate('bodyFont', v)}
-                >
-                  <SelectTrigger className="h-12 rounded-xl bg-gray-50 border-2 border-gray-100 focus:border-orange-500 transition-all">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent className="rounded-2xl min-w-[300px] max-h-[450px] shadow-2xl border-2 border-orange-500/10">
-                    {FONT_OPTIONS.map(f => (
-                      <SelectItem key={f.id} value={f.id} className="rounded-xl py-3 focus:bg-orange-50 transition-colors">
-                        <span className="font-medium text-sm">{f.label}</span>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
 
         {/* 1. Tenant Identification */}
         <Card className="lg:col-span-3 border-2 border-primary/20 shadow-none overflow-hidden rounded-3xl">
@@ -638,67 +713,6 @@ export default function SuperConfigPage() {
            </CardContent>
         </Card>
 
-        {/* NEW: SaaS Subscription Control */}
-        <Card className="lg:col-span-1 border-2 border-red-500/20 shadow-none overflow-hidden rounded-3xl">
-           <CardHeader className="bg-red-500/5 border-b">
-              <CardTitle className="flex items-center gap-2">
-                 <CreditCard className="h-5 w-5 text-red-600" /> Subscription Control
-              </CardTitle>
-           </CardHeader>
-           <CardContent className="p-6 space-y-6">
-               <div className="space-y-2">
-                <Label htmlFor="sub-expiry" className="font-bold text-xs">Expiry Date & Time</Label>
-                <input 
-                  id="sub-expiry" 
-                  type="datetime-local" 
-                  value={(() => {
-                    if (!settings?.saasSubscription?.expiryDate) return '';
-                    const date = new Date(settings.saasSubscription.expiryDate);
-                    const year = date.getFullYear();
-                    const month = String(date.getMonth() + 1).padStart(2, '0');
-                    const day = String(date.getDate()).padStart(2, '0');
-                    const hours = String(date.getHours()).padStart(2, '0');
-                    const minutes = String(date.getMinutes()).padStart(2, '0');
-                    return `${year}-${month}-${day}T${hours}:${minutes}`;
-                  })()}
-                  onChange={(e) => {
-                    const localDate = new Date(e.target.value);
-                    setSettings({
-                      ...(settings ?? {}), 
-                      saasSubscription: {
-                        ...(settings?.saasSubscription || {}),
-                        expiryDate: localDate.toISOString()
-                      }
-                    });
-                  }} 
-                  className="w-full h-12 rounded-xl border px-4 text-sm" 
-                />
-                <p className="text-[10px] text-muted-foreground italic">Set when the tenant's access will automatically expire.</p>
-              </div>
-              <div className="space-y-2">
-                <Label className="font-bold text-xs">Access Status</Label>
-                <Select 
-                  value={settings?.saasSubscription?.status || 'Active'} 
-                  onValueChange={(v) => setSettings({
-                    ...settings, 
-                    saasSubscription: {
-                      ...(settings?.saasSubscription || {}),
-                      status: v
-                    }
-                  })}
-                >
-                  <SelectTrigger className="h-12 rounded-xl">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Active">Active (Live)</SelectItem>
-                    <SelectItem value="Expired">Expired (Blocked)</SelectItem>
-                    <SelectItem value="Suspended">Suspended (Manual Block)</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-           </CardContent>
-        </Card>
 
         {/* 6. Layout & Templates */}
         <Card className="lg:col-span-3 border-2 border-primary/10 shadow-none overflow-hidden rounded-3xl">
