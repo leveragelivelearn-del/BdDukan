@@ -1,17 +1,30 @@
 
-const store_id = process.env.SSLCOMMERZ_STORE_ID;
-const store_passwd = process.env.SSLCOMMERZ_STORE_PASSWORD;
-const is_live = process.env.SSLCOMMERZ_IS_LIVE === 'true';
-
-if (!store_id || !store_passwd) {
-  throw new Error('SSLCommerz store_id or store_passwd not provided in environment variables');
-}
+import GlobalSettings from '@/models/GlobalSettings';
+import { getTenantDomain } from './tenant';
 
 /**
  * Native SSLCommerz Initialization using fetch
  * This avoids external library dependency issues with fetch/axios in Next.js
  */
 export async function initPayment(data: any) {
+  let final_store_id = process.env.SSLCOMMERZ_STORE_ID;
+  let final_store_passwd = process.env.SSLCOMMERZ_STORE_PASSWORD;
+  const is_live = process.env.SSLCOMMERZ_IS_LIVE === 'true' || process.env.SSLCOMMERZ_IS_SANDBOX !== 'true';
+
+  // Fallback to database if not in env
+  if (!final_store_id || !final_store_passwd) {
+    const domain = await getTenantDomain();
+    const settings = await GlobalSettings.findOne({ domain }).lean() as any;
+    const sslConfig = settings?.paymentConfig?.sslcommerz;
+    
+    final_store_id = sslConfig?.storeId || final_store_id;
+    final_store_passwd = sslConfig?.storePassword || final_store_passwd;
+  }
+
+  if (!final_store_id || !final_store_passwd) {
+    throw new Error('SSLCommerz credentials not found in env or database');
+  }
+
   const baseUrl = is_live 
     ? 'https://securepay.sslcommerz.com/gwprocess/v4/api.php' 
     : 'https://sandbox.sslcommerz.com/gwprocess/v4/api.php';
@@ -19,8 +32,8 @@ export async function initPayment(data: any) {
   const formData = new URLSearchParams();
   
   // Add required authentication fields
-  formData.append('store_id', store_id!);
-  formData.append('store_passwd', store_passwd!);
+  formData.append('store_id', final_store_id);
+  formData.append('store_passwd', final_store_passwd);
   
   // Add all other dynamic fields
   Object.keys(data).forEach(key => {
@@ -61,14 +74,33 @@ export async function validatePayment(data: any) {
     return null;
   }
 
+  let final_store_id = process.env.SSLCOMMERZ_STORE_ID;
+  let final_store_passwd = process.env.SSLCOMMERZ_STORE_PASSWORD;
+  const is_live = process.env.SSLCOMMERZ_IS_LIVE === 'true' || process.env.SSLCOMMERZ_IS_SANDBOX !== 'true';
+
+  // Fallback to database if not in env
+  if (!final_store_id || !final_store_passwd) {
+    const domain = await getTenantDomain();
+    const settings = await GlobalSettings.findOne({ domain }).lean() as any;
+    const sslConfig = settings?.paymentConfig?.sslcommerz;
+    
+    final_store_id = sslConfig?.storeId || final_store_id;
+    final_store_passwd = sslConfig?.storePassword || final_store_passwd;
+  }
+
+  if (!final_store_id || !final_store_passwd) {
+    console.error('SSLCommerz credentials not found for validation');
+    return null;
+  }
+
   const baseUrl = is_live 
     ? 'https://securepay.sslcommerz.com/validator/api/validationserverAPI.php' 
     : 'https://sandbox.sslcommerz.com/validator/api/validationserverAPI.php';
 
   const params = new URLSearchParams({
     val_id: val_id.toString(),
-    store_id: store_id!,
-    store_passwd: store_passwd!,
+    store_id: final_store_id,
+    store_passwd: final_store_passwd,
     format: 'json'
   });
 
