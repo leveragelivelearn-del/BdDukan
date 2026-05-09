@@ -21,7 +21,7 @@ async function migrate() {
     await connectToDatabase();
     console.log('Connected to database.');
 
-    const defaultDomain = 'janopriyo.com';
+    const defaultDomain = 'mibd.shop';
     const filter = { 
       $or: [
         { domain: { $exists: false } },
@@ -49,7 +49,7 @@ async function migrate() {
 
     for (const m of models) {
       console.log(`Migrating ${m.name}...`);
-      const result = await m.model.updateMany(filter, update);
+      const result = await (m.model as any).updateMany(filter, update);
       console.log(`${m.name}: ${result.modifiedCount} documents updated.`);
     }
 
