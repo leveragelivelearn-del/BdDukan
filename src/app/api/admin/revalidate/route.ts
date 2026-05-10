@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
     const { tag, path } = await req.json();
 
     if (tag) {
-      revalidateTag(tag);
+      revalidateTag(tag, 'max');
       console.log(`Revalidated tag: ${tag}`);
     }
 
