@@ -177,29 +177,29 @@ export default function SuperConfigPage() {
   const ui = settings?.uiTemplates || {};
 
   return (
-    <div className="p-4 md:p-10 max-w-7xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom duration-700">
+    <div className="p-4 md:p-8 lg:p-10 max-w-7xl mx-auto space-y-6 md:space-y-8 animate-in fade-in slide-in-from-bottom duration-700">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b pb-8">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b pb-8">
         <div className="space-y-1">
-          <div className="flex items-center gap-2 text-primary font-black uppercase tracking-widest text-xs">
+          <div className="flex items-center gap-2 text-primary font-black uppercase tracking-widest text-[10px] md:text-xs">
             <ShieldCheck className="h-4 w-4" /> Global Infrastructure Control
           </div>
-          <h1 className="text-4xl font-black tracking-tighter">Tenant Deep Config</h1>
-          <p className="text-muted-foreground">Manage keys, tracking, and logistics for this specific domain.</p>
+          <h1 className="text-2xl md:text-4xl font-black tracking-tighter">Tenant Deep Config</h1>
+          <p className="text-muted-foreground text-sm">Manage keys, tracking, and logistics for this specific domain.</p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
           <Button 
             variant="outline"
             onClick={handleRepair} 
             disabled={saving || !settings}
-            className="h-12 px-6 rounded-xl font-bold gap-2 border-2"
+            className="h-11 md:h-12 px-4 md:px-6 rounded-xl font-bold gap-2 border-2 text-sm"
           >
             {saving ? 'Repairing...' : 'Repair Database'}
           </Button>
           <Button 
             onClick={handleUpdate} 
             disabled={saving || !settings}
-            className="h-12 px-8 rounded-xl font-bold gap-2 shadow-lg shadow-primary/20"
+            className="h-11 md:h-12 px-6 md:px-8 rounded-xl font-bold gap-2 shadow-lg shadow-primary/20 text-sm"
           >
             {saving ? 'Applying...' : <><Save className="h-5 w-5" /> Save SaaS Config</>}
           </Button>
@@ -210,18 +210,18 @@ export default function SuperConfigPage() {
         {/* Left Column: Brand Identity (Spans 2 columns) */}
         <div className="lg:col-span-2">
           <Card className="h-full border-none shadow-2xl bg-white/80 backdrop-blur-xl overflow-hidden">
-            <CardHeader className="bg-gradient-to-r from-orange-500 to-red-600 text-white pb-8">
+            <CardHeader className="bg-gradient-to-r from-orange-500 to-red-600 text-white p-5 md:p-8">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-white/20 rounded-lg">
-                  <Settings2 className="w-6 h-6" />
+                <div className="p-2 bg-white/20 rounded-lg shrink-0">
+                  <Settings2 className="w-5 h-5 md:w-6 md:h-6" />
                 </div>
                 <div>
-                  <CardTitle className="text-2xl font-bold">Brand Identity & Typography</CardTitle>
-                  <CardDescription className="text-orange-100">Configure your brand name, logo and fonts</CardDescription>
+                  <CardTitle className="text-xl md:text-2xl font-bold leading-tight">Brand Identity & Typography</CardTitle>
+                  <CardDescription className="text-orange-100 text-xs md:text-sm">Configure your brand name, logo and fonts</CardDescription>
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="p-8 space-y-6">
+            <CardContent className="p-5 md:p-8 space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {/* Brand Name */}
                 <div className="space-y-3">
@@ -378,12 +378,12 @@ export default function SuperConfigPage() {
 
         {/* 1. Tenant Identification */}
         <Card className="lg:col-span-3 border-2 border-primary/20 shadow-none overflow-hidden rounded-3xl">
-           <CardHeader className="bg-primary/5 border-b">
-              <CardTitle className="flex items-center gap-2">
+            <CardHeader className="bg-primary/5 border-b p-5 md:px-6">
+              <CardTitle className="flex items-center gap-2 text-lg md:text-xl">
                  <Globe className="h-5 w-5 text-primary" /> Core Identity
               </CardTitle>
            </CardHeader>
-           <CardContent className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+           <CardContent className="p-5 md:p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                <div className="space-y-2">
                 <Label htmlFor="store-domain" className="font-bold">Store Domain</Label>
                 <input 

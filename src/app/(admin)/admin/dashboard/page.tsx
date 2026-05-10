@@ -196,36 +196,38 @@ export default function AdminDashboard() {
   const { stats, recentOrders, lowStockProducts, topSellingProducts, topCustomers, chartData } = data || {};
 
   return (
-    <div className="flex-1 space-y-6 p-8 pt-6">
+    <div className="flex-1 space-y-6 p-4 md:p-8 pt-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">Dashboard Overview</h2>
-          <p className="text-muted-foreground text-sm">Advanced business intelligence and sales analytics.</p>
+          <h2 className="text-2xl md:text-3xl font-bold tracking-tight">Dashboard Overview</h2>
+          <p className="text-muted-foreground text-xs md:text-sm">Advanced business intelligence and sales analytics.</p>
         </div>
         
         <div className="flex flex-wrap items-center gap-2">
-          <div className="flex items-center gap-2 bg-muted/50 p-1 rounded-md border">
-            <div className="flex items-center gap-1 px-2">
+          <div className="flex items-center gap-2 bg-muted/50 p-1 rounded-lg border w-full sm:w-auto">
+            <div className="flex items-center gap-1 px-2 shrink-0">
               <Filter className="h-3 w-3 text-muted-foreground" />
-              <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Range</span>
+              <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Range</span>
             </div>
-            <Input 
-              type="date" 
-              className="h-8 w-36 border-none bg-transparent focus-visible:ring-0 cursor-pointer" 
-              value={dateRange.from}
-              onChange={(e) => handleDateChange('from', e.target.value)}
-              max={format(new Date(), 'yyyy-MM-dd')}
-            />
-            <span className="text-muted-foreground text-xs">to</span>
-            <Input 
-              type="date" 
-              className="h-8 w-36 border-none bg-transparent focus-visible:ring-0 cursor-pointer" 
-              value={dateRange.to}
-              onChange={(e) => handleDateChange('to', e.target.value)}
-              max={format(new Date(), 'yyyy-MM-dd')}
-            />
+            <div className="flex items-center gap-1 flex-1 sm:flex-initial">
+              <Input 
+                type="date" 
+                className="h-8 w-full sm:w-32 border-none bg-transparent focus-visible:ring-0 cursor-pointer text-xs p-1" 
+                value={dateRange.from}
+                onChange={(e) => handleDateChange('from', e.target.value)}
+                max={format(new Date(), 'yyyy-MM-dd')}
+              />
+              <span className="text-muted-foreground text-[10px] shrink-0">to</span>
+              <Input 
+                type="date" 
+                className="h-8 w-full sm:w-32 border-none bg-transparent focus-visible:ring-0 cursor-pointer text-xs p-1" 
+                value={dateRange.to}
+                onChange={(e) => handleDateChange('to', e.target.value)}
+                max={format(new Date(), 'yyyy-MM-dd')}
+              />
+            </div>
           </div>
-          <Button variant="outline" size="sm" onClick={fetchStats} className="h-10">
+          <Button variant="outline" size="sm" onClick={fetchStats} className="h-10 px-4 w-full sm:w-auto font-bold">
             {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Refresh'}
           </Button>
         </div>
@@ -289,34 +291,34 @@ export default function AdminDashboard() {
         {/* Interactive Chart */}
         <Card className="col-span-full">
           <CardHeader className="flex flex-col items-stretch border-b p-0 sm:flex-row">
-            <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
-              <CardTitle>Performance Trends</CardTitle>
-              <CardDescription>
+            <div className="flex flex-1 flex-col justify-center gap-1 px-4 py-4 md:px-6 md:py-6">
+              <CardTitle className="text-lg md:text-xl">Performance Trends</CardTitle>
+              <CardDescription className="text-xs md:text-sm">
                 Comparison between Revenue and Gross Profit
               </CardDescription>
             </div>
-            <div className="flex overflow-x-auto">
+            <div className="flex overflow-x-auto border-t sm:border-t-0 no-scrollbar">
               {(["revenue", "profit", "orders"] as const).map((key) => (
                 <button
                   key={key}
                   data-active={activeChart === key}
-                  className="flex flex-1 min-w-[120px] flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l data-[active=true]:bg-muted/50 sm:border-t-0 sm:border-l sm:px-8 sm:py-6"
+                  className="flex flex-1 min-w-[100px] sm:min-w-[120px] flex-col justify-center gap-1 border-r last:border-r-0 px-4 py-3 md:px-8 md:py-6 text-left data-[active=true]:bg-muted/50 sm:border-l sm:border-r-0"
                   onClick={() => setActiveChart(key)}
                 >
-                  <span className="text-xs text-muted-foreground whitespace-nowrap">
+                  <span className="text-[10px] md:text-xs text-muted-foreground whitespace-nowrap">
                     {chartConfig[key].label}
                   </span>
-                  <span className="text-lg leading-none font-bold sm:text-2xl">
+                  <span className="text-base md:text-2xl leading-none font-bold">
                     {key === 'orders' ? total[key].toLocaleString() : `৳${total[key].toLocaleString()}`}
                   </span>
                 </button>
               ))}
             </div>
           </CardHeader>
-          <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
+          <CardContent className="px-1 pt-4 sm:px-6 sm:pt-6">
             <ChartContainer
               config={chartConfig}
-              className="aspect-auto h-[350px] w-full"
+              className="aspect-auto h-[250px] md:h-[350px] w-full"
             >
               <AreaChart data={processedChartData} margin={{ left: 12, right: 12, top: 20, bottom: 0 }}>
                 <defs>
