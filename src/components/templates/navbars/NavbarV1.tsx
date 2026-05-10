@@ -30,6 +30,7 @@ import { CartDrawer } from '@/components/layout/CartDrawer';
 import { CategoryNav } from '@/components/layout/CategoryNav';
 import { AIChatbot } from '@/components/layout/AIChatbot';
 import { Logo } from '@/components/ui/logo';
+import { useSettings } from '@/components/SettingsProvider';
 import {
   Accordion,
   AccordionContent,
@@ -63,6 +64,7 @@ export default function Navbar() {
   const { data: session, status } = useSession();
   const { totalQuantity: cartCount, totalAmount } = useAppSelector((state) => state.cart);
   const { items: wishlistItems } = useAppSelector((state) => state.wishlist);
+  const settings = useSettings();
 
   const [categories, setCategories] = useState<any[]>([]);
   const [profile, setProfile] = useState<any>(null);
@@ -288,10 +290,12 @@ export default function Navbar() {
                 <ModeToggle />
               </div>
 
-              {/* AI Chatbot */}
-              <div className="hidden sm:block">
-                <AIChatbot />
-              </div>
+              {/* AI Chatbot - Only visible if API key is set */}
+              {settings?.aiConfig?.openRouterApiKey && (
+                <div className="hidden sm:block">
+                  <AIChatbot />
+                </div>
+              )}
 
               {/* Wishlist */}
               <Link

@@ -10,6 +10,10 @@ interface SettingsContextType {
     logoFont?: string;
     bodyFont?: string;
   };
+  aiConfig?: {
+    openRouterApiKey?: string;
+    systemPrompt?: string;
+  };
 }
 
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
