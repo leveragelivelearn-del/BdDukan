@@ -27,6 +27,7 @@ export async function POST(req: NextRequest) {
       revalidateTag('products', 'max');
       revalidateTag('categories', 'max');
       revalidateTag('banners', 'max');
+      revalidateTag('faqs', 'max');
       revalidateTag('settings', 'max');
       revalidatePath('/', 'layout');
       console.log('Revalidated all main tags');

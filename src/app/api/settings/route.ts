@@ -165,6 +165,7 @@ export async function POST(req: NextRequest) {
     revalidateTag('settings', 'max');
     revalidateTag('products', 'max');
     revalidateTag('categories', 'max');
+    revalidateTag('faqs', 'max');
     revalidatePath('/', 'layout');
     revalidatePath('/shop', 'page');
     revalidatePath('/blog', 'page');
