@@ -257,7 +257,7 @@ export default async function RootLayout({
   // Subscription Enforcement Logic
   const sub = settings?.saasSubscription;
   // If sub is missing, default to not expired (allow access by default)
-  const isExpired = sub ? (sub.status !== 'Active' || (sub.expiryDate && new Date(sub.expiryDate) < new Date())) : false;
+  const isExpired = sub ? (sub.status !== 'Active' || (sub.expiryDate && new Date(sub.expiryDate).getTime() < new Date().getTime())) : false;
 
   // Allow admin and auth routes to bypass blocker so admin can login and fix the subscription
   const isAdminRoute = pathname.toLowerCase().startsWith('/admin');

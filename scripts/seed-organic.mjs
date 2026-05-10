@@ -259,6 +259,7 @@ async function seed() {
       slug: "organic-turmeric-pow-high", 
       price: 220, 
       cat: "organic-spices", 
+      image: "/assets/organic/products/organic_turmeric_powder_1778373855826.webp",
       desc: "Sourced from organic farms in Sylhet, this turmeric powder has a high curcumin content and deep natural color. No artificial colors added.",
       features: ["High Curcumin", "Vibrant Color", "Pesticide Free"]
     },
@@ -267,6 +268,7 @@ async function seed() {
       slug: "premium-red-chili-pow", 
       price: 260, 
       cat: "organic-spices", 
+      image: "/assets/organic/products/premium_red_chili_powder_1778373870948.webp",
       desc: "Naturally dried and ground red chilies providing the perfect balance of heat and flavor for your curry.",
       features: ["Natural Spice", "No Additives", "Deep Red Color"]
     },
@@ -275,6 +277,7 @@ async function seed() {
       slug: "black-pepper-corns-whole", 
       price: 550, 
       cat: "organic-spices", 
+      image: "/assets/organic/products/whole_black_pepper_corns_1778373888662.webp",
       desc: "Pungent and aromatic whole black pepper. Perfect for seasoning and traditional medicinal preparations.",
       features: ["Strong Aroma", "Freshly Packed", "Grade A Quality"]
     },
@@ -283,6 +286,7 @@ async function seed() {
       slug: "ceylon-cinnamon-sticks-true", 
       price: 450, 
       cat: "organic-spices", 
+      image: "/assets/organic/products/ceylon_cinnamon_sticks_1778373905330.webp",
       desc: "True Ceylon cinnamon from Sri Lanka. Unlike Cassia, it has a sweet aroma and is safe for daily consumption due to low coumarin.",
       features: ["Sweet Aroma", "Low Coumarin", "Thin Quills"]
     },
@@ -291,6 +295,7 @@ async function seed() {
       slug: "green-cardamom-premium", 
       price: 1800, 
       cat: "organic-spices", 
+      image: "/assets/organic/products/green_cardamom_premium_1778373923019.webp",
       desc: "Selected large green cardamom pods with intense fragrance. Essential for premium tea and desserts.",
       features: ["Intense Aroma", "Green & Large", "Premium Export Quality"]
     },
@@ -301,6 +306,7 @@ async function seed() {
       slug: "organic-green-tea-pg", 
       price: 450, 
       cat: "organic-tea", 
+      image: "/assets/organic/products/organic_green_tea_leaves_1778373944818.webp",
       desc: "Freshly sourced from the highlands of Panchagarh. This green tea is rich in catechins and provides a refreshing metabolic boost.",
       features: ["Rich in Catechins", "Refreshing Taste", "Locally Sourced"]
     },
@@ -309,6 +315,7 @@ async function seed() {
       slug: "hibiscus-tea-flowers", 
       price: 550, 
       cat: "organic-tea", 
+      image: "/assets/organic/products/hibiscus_tea_flowers_1778373966990.webp",
       desc: "Tart and floral dried hibiscus petals. Known for supporting heart health and reducing blood pressure naturally.",
       features: ["Rich in Vitamin C", "Heart Healthy", "Caffeine Free"]
     },
@@ -317,6 +324,7 @@ async function seed() {
       slug: "chamomile-tea-flowers", 
       price: 750, 
       cat: "organic-tea", 
+      image: "/assets/organic/products/chamomile_flower_tea_1778373983068.webp",
       desc: "Soothing whole chamomile flowers. The perfect bedtime tea for relaxation and improved sleep quality.",
       features: ["Relaxing Effect", "Whole Flowers", "Sleep Support"]
     },
@@ -325,6 +333,7 @@ async function seed() {
       slug: "tulsi-ginger-herbal-blend", 
       price: 380, 
       cat: "organic-tea", 
+      image: "/assets/organic/products/tulsi_ginger_herbal_blend_tea_1778373997289.webp",
       desc: "A warming blend of dried Tulsi (Holy Basil) and Ginger. Excellent for immunity and relief from common cold symptoms.",
       features: ["Immunity Support", "Warming Taste", "Natural Relief"]
     },
@@ -333,6 +342,7 @@ async function seed() {
       slug: "ceremonial-matcha-pow", 
       price: 1800, 
       cat: "organic-tea", 
+      image: "/assets/organic/products/ceremonial_matcha_powder_bowl_1778374016834.webp",
       desc: "Stone-ground green tea powder from Japan. Provides sustained energy and focus without the caffeine jitters.",
       features: ["Superfood", "Energy & Focus", "Vibrant Green"]
     },
@@ -343,6 +353,7 @@ async function seed() {
       slug: "black-chia-seeds-organic", 
       price: 750, 
       cat: "organic-grains", 
+      image: "/assets/organic/products/organic_black_chia_seeds_jar_1778374038335.webp",
       desc: "Highly nutritious seeds packed with fiber, protein, and Omega-3. Perfect for soaking in water or adding to yogurt.",
       features: ["Fiber Rich", "Omega-3 Packed", "Premium Quality"]
     },
@@ -351,6 +362,7 @@ async function seed() {
       slug: "tri-color-quinoa-premium", 
       price: 1100, 
       cat: "organic-grains", 
+      image: "/assets/organic/products/tri_color_quinoa_bowl_1778374053723.webp",
       desc: "A healthy mix of white, red, and black quinoa. A complete protein source that is easy to cook and delicious.",
       features: ["Complete Protein", "Gluten Free", "Healthy Grain"]
     },
@@ -359,6 +371,7 @@ async function seed() {
       slug: "golden-flax-seeds-pure", 
       price: 380, 
       cat: "organic-grains", 
+      image: "/assets/organic/products/golden_flax_seeds_container_1778374069623.webp",
       desc: "Heart-healthy flax seeds rich in Lignans. Best consumed ground to maximize nutrient absorption.",
       features: ["Heart Healthy", "Rich in Lignans", "Versatile Use"]
     },
@@ -367,6 +380,7 @@ async function seed() {
       slug: "aromatic-red-rice", 
       price: 220, 
       cat: "organic-grains", 
+      image: "/assets/organic/products/aromatic_red_rice_jute_bag_1778374084524.webp",
       desc: "Unpolished red rice with the bran intact. Higher in fiber and vitamins compared to white rice.",
       features: ["High Fiber", "Low Glycemic Index", "Rich in B-Vitamins"]
     },
@@ -375,6 +389,7 @@ async function seed() {
       slug: "raw-pumpkin-seeds", 
       price: 850, 
       cat: "organic-grains", 
+      image: "/assets/organic/products/raw_pumpkin_seeds_bowl_1778374100018.webp",
       desc: "Zinc-rich green pumpkin kernels. Great for boosting prostate health and improving sleep quality.",
       features: ["Rich in Zinc", "Healthy Snack", "Energy Boosting"]
     },
@@ -385,6 +400,7 @@ async function seed() {
       slug: "natural-banana-organic", 
       price: 150, 
       cat: "organic-fruits", 
+      image: "/assets/organic/products/naturally_ripened_banana_bunch_1778374121594.webp",
       desc: "Sweet and creamy bananas ripened without any harmful chemicals or carbide. Safe for children and everyone.",
       features: ["Chemical Free", "Naturally Ripened", "Rich in Potassium"]
     },
@@ -393,6 +409,7 @@ async function seed() {
       slug: "green-apples-crisp", 
       price: 380, 
       cat: "organic-fruits", 
+      image: "/assets/organic/products/premium_green_apples_fresh_1778374139017.webp",
       desc: "Tart and juicy green apples sourced from organic orchards. High in fiber and great for digestion.",
       features: ["Crisp Texture", "Tart Flavor", "High Fiber"]
     },
@@ -401,6 +418,7 @@ async function seed() {
       slug: "sweet-nagpur-oranges", 
       price: 320, 
       cat: "organic-fruits", 
+      image: "/assets/organic/products/Sweet Nagpur Oranges.webp",
       desc: "Juicy and vibrant oranges packed with natural Vitamin C. Perfect for fresh morning juice.",
       features: ["Vitamin C Rich", "Juicy & Sweet", "Fresh Picked"]
     },
@@ -409,6 +427,7 @@ async function seed() {
       slug: "red-pomegranate-organic", 
       price: 550, 
       cat: "organic-fruits", 
+      image: "/assets/organic/products/Organic Red Pomegranate.webp",
       desc: "Premium pomegranates with deep red seeds. Known as a super-fruit for heart health and blood purification.",
       features: ["Blood Booster", "Antioxidant Rich", "Sweet Seeds"]
     },
@@ -417,6 +436,7 @@ async function seed() {
       slug: "fresh-dragon-fruit-pink", 
       price: 750, 
       cat: "organic-fruits", 
+      image: "/assets/organic/products/Fresh Dragon Fruit.webp",
       desc: "Exotic dragon fruit rich in prebiotic fiber and antioxidants. Low calorie and very healthy.",
       features: ["Prebiotic Fiber", "Low Calorie", "Stunning Color"]
     },
@@ -427,6 +447,7 @@ async function seed() {
       slug: "aloe-vera-gel-organic-pure", 
       price: 480, 
       cat: "organic-skincare", 
+      image: "/assets/organic/products/Pure Aloe Vera Gel.webp",
       desc: "Multipurpose soothing gel extracted from fresh aloe leaves. Excellent for soothing sunburns, hydrating skin, and hair conditioning.",
       features: ["99% Pure Aloe", "No Artificial Color", "Soothing Effect"]
     },
@@ -435,6 +456,7 @@ async function seed() {
       slug: "multani-mitti-natural", 
       price: 180, 
       cat: "organic-skincare", 
+      image: "/assets/organic/products/Multani Mitti (Fuller's Earth).webp",
       desc: "Traditional clay for deep skin cleansing. Removes excess oil, fights acne, and provides a natural glow.",
       features: ["Deep Cleansing", "Oil Control", "Natural Glow"]
     },
@@ -443,6 +465,7 @@ async function seed() {
       slug: "rose-water-mist-distilled", 
       price: 280, 
       cat: "organic-skincare", 
+      image: "/assets/organic/products/Distilled Rose Water Mist.webp",
       desc: "Hydrating rose water produced through steam distillation. A perfect natural toner and facial refresher.",
       features: ["Natural Toner", "Alcohol Free", "Sweet Fragrance"]
     },
@@ -451,6 +474,7 @@ async function seed() {
       slug: "neem-face-pack-organic", 
       price: 350, 
       cat: "organic-skincare", 
+      image: "/assets/organic/products/Organic Neem Face Pack.webp",
       desc: "Effective antibacterial face pack made from organic neem leaves. Helps clear acne, blemishes, and skin irritations.",
       features: ["Antibacterial", "Fights Acne", "100% Herbal"]
     },
@@ -459,6 +483,7 @@ async function seed() {
       slug: "unrefined-shea-butter-pure", 
       price: 950, 
       cat: "organic-skincare", 
+      image: "/assets/organic/products/Unrefined Shea Butter.webp",
       desc: "Raw, unrefined shea butter from Ghana. The ultimate moisturizer for very dry skin, stretch marks, and eczema.",
       features: ["Intense Moisture", "Raw & Unrefined", "Vitamin A & E"]
     },
@@ -469,6 +494,7 @@ async function seed() {
       slug: "acv-mother-organic-pure", 
       price: 850, 
       cat: "health-drinks", 
+      image: "/assets/organic/products/Apple Cider Vinegar (Mother).webp",
       desc: "Raw, unfiltered, and organic apple cider vinegar containing the 'Mother'. Supports weight management and digestive health.",
       features: ["Raw & Unfiltered", "Contains Mother", "Aids Weight Loss"]
     },
@@ -477,6 +503,7 @@ async function seed() {
       slug: "natural-pomegranate-juice-pure", 
       price: 450, 
       cat: "health-drinks", 
+      image: "/assets/organic/products/Natural Pomegranate Juice.webp",
       desc: "100% pure pomegranate juice with no added water, sugar, or preservatives. Cold pressed for maximum nutrients.",
       features: ["Cold Pressed", "No Added Sugar", "Heart Healthy"]
     },
@@ -485,6 +512,7 @@ async function seed() {
       slug: "aloe-vera-juice-digestive", 
       price: 550, 
       cat: "health-drinks", 
+      image: "/assets/organic/products/Digestive Aloe Vera Juice.webp",
       desc: "Pure aloe vera juice with fiber. Helps in soothing the digestive tract and regularizing bowel movements.",
       features: ["Gut Support", "Fiber Included", "Natural Detox"]
     },
@@ -493,6 +521,7 @@ async function seed() {
       slug: "amla-juice-vit-c", 
       price: 420, 
       cat: "health-drinks", 
+      image: "/assets/organic/products/Pure Amla Vitamin C Juice.webp",
       desc: "Powerful Vitamin C booster made from fresh Indian gooseberries. Great for hair health and immunity.",
       features: ["Immunity Booster", "Hair Health", "Vitamin C Rich"]
     },
@@ -501,6 +530,7 @@ async function seed() {
       slug: "creamy-organic-soy-milk", 
       price: 650, 
       cat: "health-drinks", 
+      image: "/assets/organic/products/Creamy Organic Soy Milk.webp",
       desc: "Non-GMO organic soy milk. A high-protein, lactose-free alternative to dairy milk, fortified with vitamins.",
       features: ["Lactose Free", "Plant Protein", "Non-GMO"]
     },

@@ -163,6 +163,8 @@ export async function POST(req: NextRequest) {
     }
 
     revalidateTag('settings', 'max');
+    revalidateTag('products', 'max');
+    revalidateTag('categories', 'max');
     revalidatePath('/', 'layout');
     revalidatePath('/shop', 'page');
     revalidatePath('/blog', 'page');
