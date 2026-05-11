@@ -11,6 +11,7 @@ import { CartHydrator } from './CartHydrator';
 import { WishlistHydrator } from './WishlistHydrator';
 
 import { SettingsProvider } from './SettingsProvider';
+import { TooltipProvider } from '@/components/ui/tooltip';
 
 export function Providers({ 
   children,
@@ -29,13 +30,15 @@ export function Providers({
           disableTransitionOnChange
         >
           <SettingsProvider settings={settings}>
-            <AnimationProvider>
-              <CartHydrator>
-                <WishlistHydrator>
-                  {children}
-                </WishlistHydrator>
-              </CartHydrator>
-            </AnimationProvider>
+            <TooltipProvider>
+              <AnimationProvider>
+                <CartHydrator>
+                  <WishlistHydrator>
+                    {children}
+                  </WishlistHydrator>
+                </CartHydrator>
+              </AnimationProvider>
+            </TooltipProvider>
           </SettingsProvider>
         </NextThemesProvider>
       </ReduxProvider>

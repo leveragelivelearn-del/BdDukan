@@ -2,10 +2,18 @@ import dynamic from 'next/dynamic';
 
 // --- FOOTERS ---
 const FooterV1 = dynamic(() => import('./footers/FooterV1'));
+const FooterV2 = dynamic(() => import('./footers/FooterV2'));
+const FooterV3 = dynamic(() => import('./footers/FooterV3'));
+const FooterV4 = dynamic(() => import('./footers/FooterV4'));
+const FooterV5 = dynamic(() => import('./footers/FooterV5'));
 
 export const FooterSelector = ({ style }: { style: string }) => {
   switch (style) {
     case 'v1': return <FooterV1 />;
+    case 'v2': return <FooterV2 />;
+    case 'v3': return <FooterV3 />;
+    case 'v4': return <FooterV4 />;
+    case 'v5': return <FooterV5 />;
     default: return <FooterV1 />;
   }
 };
