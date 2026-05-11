@@ -391,7 +391,7 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
       </div>
 
       {/* Product Info Section */}
-      <div className="flex flex-col gap-6 lg:h-full">
+      <div className="flex flex-col gap-6">
         <div className="space-y-2">
 
           <div className="flex items-center justify-between gap-4">
@@ -477,7 +477,7 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
         <Separator />
 
         {/* Dynamic Content Spacer */}
-        <div className="flex-1 space-y-6">
+        <div className="space-y-6">
           {/* Selection Options */}
           <div className="space-y-6">
             {/* Colors Selection */}
@@ -556,7 +556,7 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
         </div>
 
         {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row items-center gap-4 pt-6 border-t mt-auto">
+        <div className="flex flex-col sm:flex-row items-center gap-4 pt-6 border-t">
           <div className="flex items-center border rounded-full overflow-hidden h-12 bg-muted/50">
             <Button
               variant="ghost"
