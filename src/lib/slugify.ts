@@ -1,40 +1,23 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { Model } from 'mongoose';
+import { slugify as tSlugify } from 'transliteration';
 
 /**
- * Generates a unique slug for a Mongoose model.
- * If the slug already exists, appends a number (slug-1, slug-2, etc.) until unique.
- *
- * NOTE: This helper helps choose a candidate slug but does not eliminate the
- * TOCTOU race on its own. Callers must enforce a unique slug index on the
- * model schema and catch MongoDB duplicate-key errors (`E11000`, `error.code === 11000`)
- * when persisting documents, retrying slug generation as needed.
+ * Generates a URL-friendly slug from a given string.
+ * Supports Bengali transliteration to English.
+ * 
+ * @param text The string to slugify
+ * @returns A URL-friendly slug string
  */
-export async function generateUniqueSlug(
-  model: Model<any>,
-  baseSlug: string,
-  domain: string,
-  excludeId?: string
-): Promise<string> {
-  let slug = baseSlug;
-  let counter = 1;
-  let exists = true;
+export const slugify = (text: string): string => {
+  if (!text) return '';
 
-  while (exists) {
-    const query: any = { slug, domain };
-    if (excludeId) {
-      query._id = { $ne: excludeId };
-    }
-
-    const doc = await model.findOne(query).select('_id').lean();
-
-    if (!doc) {
-      exists = false;
-    } else {
-      slug = `${baseSlug}-${counter}`;
-      counter++;
-    }
-  }
-
-  return slug;
-}
+  // Use transliteration for multi-language support (especially Bengali)
+  return tSlugify(text, {
+    lowercase: true,
+    separator: '-',
+    trim: true,
+  })
+  .replace(/[^\w\s-]/g, '')    // Remove non-word characters (except spaces and dashes)
+  .replace(/[\s_-]+/g, '-')    // Replace spaces and underscores with a single dash
+  .slice(0, 100)               // Limit length
+  .replace(/^-+|-+$/g, '');    // Trim dashes from start and end
+};

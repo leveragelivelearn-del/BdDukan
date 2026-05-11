@@ -22,6 +22,7 @@ import { toast } from 'sonner';
 import Link from 'next/link';
 import Image from 'next/image';
 import NovelEditor from '@/components/editor/NovelEditor';
+import { slugify } from '@/lib/slugify';
 
 const hasMeaningfulContent = (rawContent: string) => {
   if (!rawContent) return false;
@@ -54,16 +55,6 @@ export default function CreateBlogPage() {
   });
   const [imageLoadError, setImageLoadError] = useState(false);
 
-  const generateSlug = (text: string) => {
-    return text
-      .toLowerCase()
-      .trim()
-      .replace(/[^\w\s-]/g, '')
-      .replace(/[\s_-]+/g, '-')
-      .replace(/^-+|-+$/g, '')
-      .slice(0, 100);
-  };
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     
@@ -83,14 +74,14 @@ export default function CreateBlogPage() {
     setFormData(prev => {
       let finalValue = processedValue;
       if (name === 'slug') {
-        finalValue = generateSlug(processedValue);
+        finalValue = slugify(processedValue);
       }
 
       const newData = { ...prev, [name]: finalValue };
       
       // Auto-generate slug and meta title if the title is being changed
       if (name === 'title') {
-        newData.slug = generateSlug(processedValue);
+        newData.slug = slugify(processedValue);
         newData.metaTitle = processedValue;
       }
       

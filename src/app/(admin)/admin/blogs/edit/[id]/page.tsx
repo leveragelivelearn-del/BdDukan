@@ -22,6 +22,7 @@ import { toast } from 'sonner';
 import Link from 'next/link';
 import Image from 'next/image';
 import NovelEditor from '@/components/editor/NovelEditor';
+import { slugify } from '@/lib/slugify';
 
 const hasMeaningfulContent = (rawContent: string) => {
   if (!rawContent) return false;
@@ -93,16 +94,6 @@ export default function EditBlogPage() {
     if (id) fetchBlog();
   }, [id, router]);
 
-  const generateSlug = (text: string) => {
-    return text
-      .toLowerCase()
-      .trim()
-      .replace(/[^\w\s-]/g, '')
-      .replace(/[\s_-]+/g, '-')
-      .replace(/^-+|-+$/g, '')
-      .slice(0, 100);
-  };
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     let processedValue = value;
@@ -124,7 +115,7 @@ export default function EditBlogPage() {
       // Auto-generate slug and meta title IF it was empty or matching before
       // Note: we usually don't auto-update on edit if the user has already customized it
       if (name === 'title' && !prev.slug) {
-        newData.slug = generateSlug(processedValue);
+        newData.slug = slugify(processedValue);
         newData.metaTitle = processedValue;
       }
       

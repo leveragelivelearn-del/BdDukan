@@ -44,6 +44,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import Swal from 'sweetalert2';
+import { slugify } from '@/lib/slugify';
 
 const categorySchema = z.object({
   name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
@@ -178,11 +179,7 @@ export default function CategoriesPage() {
   const nameValue = form.watch('name');
   useEffect(() => {
     if (nameValue && !editingCategory) {
-      const slug = nameValue
-        .toLowerCase()
-        .replace(/ /g, '-')
-        .replace(/[^\w-]+/g, '');
-      form.setValue('slug', slug);
+      form.setValue('slug', slugify(nameValue));
     }
   }, [nameValue, form, editingCategory]);
 

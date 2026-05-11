@@ -36,6 +36,7 @@ import {
   RadioGroup, 
   RadioGroupItem 
 } from '@/components/ui/radio-group';
+import { slugify } from '@/lib/slugify';
 
 const productSchema = z.object({
   name: z.string().min(3, 'Name is required'),
@@ -147,11 +148,7 @@ export function ProductForm({ initialData }: ProductFormProps) {
   const nameValue = form.watch('name');
   useEffect(() => {
     if (nameValue && !initialData) {
-      const slug = nameValue
-        .toLowerCase()
-        .replace(/ /g, '-')
-        .replace(/[^\w-]+/g, '');
-      form.setValue('slug', slug);
+      form.setValue('slug', slugify(nameValue));
     }
   }, [nameValue, form, initialData]);
 
