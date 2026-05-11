@@ -158,7 +158,7 @@ export default function LoginPage() {
         className="fixed inset-y-0 left-0 hidden w-1/2 bg-muted lg:block"
       >
         <Image
-          src="/assets/login_banner.webp"
+          src="/assets/login_banner_v2.png"
           alt="Login Banner"
           fill
           priority
