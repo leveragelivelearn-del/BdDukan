@@ -25,6 +25,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const product = await getProduct(domain, slug);
   if (!product) return { title: 'Product Not Found' };
 
+  const headersList = await headers();
+  const host = headersList.get('host') || 'localhost';
+  const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
+  const baseUrl = `${protocol}://${host}`;
+
   const safeDescription = (product.description ?? '').slice(0, 160);
   const mainImage = product.images?.[0] ? [{ url: product.images[0] }] : [];
   const twitterImage = product.images?.[0] ? [product.images[0]] : [];
@@ -37,7 +42,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       description: safeDescription,
       images: mainImage,
       type: 'website',
-      url: `${process.env.NEXTAUTH_URL || 'https://www.bd-dukan.com'}/product/${slug}`,
+      url: `${baseUrl}/product/${slug}`,
     },
     twitter: {
       card: 'summary_large_image',
@@ -56,6 +61,8 @@ export default async function ProductDetailsPage({ params }: { params: Promise<{
   const domain = await getTenantDomain();
   const headersList = await headers();
   const hostname = headersList.get('host') || 'localhost';
+  const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
+  const baseUrl = `${protocol}://${hostname}`;
 
   const [product, settings] = await Promise.all([
     getProduct(domain, slug),
@@ -91,11 +98,11 @@ export default async function ProductDetailsPage({ params }: { params: Promise<{
     related = [];
   }
 
-  const productSchema = generateProductSchema(product);
+  const productSchema = generateProductSchema(product, baseUrl);
   const breadcrumbSchema = generateBreadcrumbSchema([
     { name: 'Home', item: '/' },
     { name: 'Shop', item: '/shop' },
-    { name: product.name, item: `/product/${product.slug}` }
+    { name: product.name, item: `${baseUrl}/product/${product.slug}` }
   ]);
 
   return (

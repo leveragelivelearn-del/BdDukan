@@ -3,12 +3,12 @@
  * Generates Structured Data (JSON-LD) for Search Engines
  */
 
-export function generateOrganizationSchema(settings: any) {
+export function generateOrganizationSchema(settings: any, baseUrl: string) {
   return {
     '@context': 'https://schema.org',
     '@type': 'Organization',
     name: settings.brandName || 'BD Dukan',
-    url: process.env.NEXTAUTH_URL || 'https://www.bd-dukan.com',
+    url: baseUrl,
     logo: settings.logo,
     contactPoint: {
       '@type': 'ContactPoint',
@@ -23,7 +23,7 @@ export function generateOrganizationSchema(settings: any) {
   };
 }
 
-export function generateProductSchema(product: any) {
+export function generateProductSchema(product: any, baseUrl: string) {
   const price = product.salePrice ?? product.price;
   
   return {
@@ -39,8 +39,8 @@ export function generateProductSchema(product: any) {
     },
     offers: {
       '@type': 'Offer',
-      url: `${process.env.NEXTAUTH_URL || 'https://www.bd-dukan.com'}/product/${product.slug}`,
-      priceCurrency: 'USD',
+      url: `${baseUrl}/product/${product.slug}`,
+      priceCurrency: 'BDT',
       price: price,
       availability: Number.isFinite(product.stock) && product.stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
       itemCondition: 'https://schema.org/NewCondition',
@@ -61,7 +61,7 @@ export function generateBreadcrumbSchema(items: { name: string; item: string }[]
   };
 }
 
-export function generateBlogSchema(blog: any) {
+export function generateBlogSchema(blog: any, baseUrl: string) {
   return {
     '@context': 'https://schema.org',
     '@type': 'BlogPosting',
@@ -74,5 +74,6 @@ export function generateBlogSchema(blog: any) {
       name: 'BD Dukan',
     },
     description: blog.metaDescription || blog.title,
+    url: `${baseUrl}/blog/${blog.slug}`,
   };
 }

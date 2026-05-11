@@ -33,6 +33,11 @@ export async function generateMetadata({ params }: BlogDetailProps): Promise<Met
 
   if (!blog) return { title: 'Blog Not Found' };
 
+  const headersList = await headers();
+  const host = headersList.get('host') || 'localhost';
+  const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
+  const baseUrl = `${protocol}://${host}`;
+
   const title = blog.metaTitle || blog.title;
   const description = blog.metaDescription || blog.title;
   const image = blog.thumbnail ? [blog.thumbnail] : [];
@@ -45,7 +50,7 @@ export async function generateMetadata({ params }: BlogDetailProps): Promise<Met
       description,
       images: image,
       type: 'article',
-      url: `${process.env.NEXTAUTH_URL || 'https://www.bd-dukan.com'}/blog/${slug}`,
+      url: `${baseUrl}/blog/${slug}`,
     },
     twitter: {
       card: 'summary_large_image',
@@ -61,6 +66,8 @@ export default async function BlogDetailPage({ params }: BlogDetailProps) {
   const domain = await getTenantDomain();
   const headersList = await headers();
   const hostname = headersList.get('host') || 'localhost';
+  const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
+  const baseUrl = `${protocol}://${hostname}`;
 
   const [blog, settings] = await Promise.all([
     getBlog(domain, slug),
@@ -73,11 +80,11 @@ export default async function BlogDetailPage({ params }: BlogDetailProps) {
   const style = settings?.uiTemplates?.blogDetail || 'v1';
   const blogId = blog._id.toString();
 
-  const blogSchema = generateBlogSchema(blog);
+  const blogSchema = generateBlogSchema(blog, baseUrl);
   const breadcrumbSchema = generateBreadcrumbSchema([
     { name: 'Home', item: '/' },
     { name: 'Blog', item: '/blog' },
-    { name: blog.title, item: `/blog/${blog.slug}` }
+    { name: blog.title, item: `${baseUrl}/blog/${blog.slug}` }
   ]);
 
   return (
