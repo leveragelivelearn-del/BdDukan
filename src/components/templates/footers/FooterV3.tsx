@@ -4,6 +4,8 @@
 import Link from 'next/link';
 import { Cpu, ShieldCheck, Zap, MoveRight, Mail, Phone, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import DeveloperLogo from '@/components/ui/developerlogo';
+
 
 export default function FooterV3() {
   const currentYear = new Date().getFullYear();
@@ -88,6 +90,7 @@ export default function FooterV3() {
               <Link href="#" className="hover:text-primary transition-colors">DE_PRIVACY</Link>
               <Link href="#" className="hover:text-primary transition-colors">DE_TERMS</Link>
            </div>
+           <DeveloperLogo className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 invert scale-75 md:scale-90" />
         </div>
       </div>
     </footer>

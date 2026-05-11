@@ -4,6 +4,8 @@
 import Link from 'next/link';
 import { Instagram, Youtube, Twitter } from '@/components/ui/social-icons';
 import { Sparkles, MoveUpRight } from 'lucide-react';
+import DeveloperLogo from '@/components/ui/developerlogo';
+
 
 export default function FooterV5() {
   const currentYear = new Date().getFullYear();
@@ -59,6 +61,7 @@ export default function FooterV5() {
               <p className="text-[10px] font-black uppercase tracking-[0.3em] text-neutral-400 text-right">
                  © {currentYear} ALL NARRATIVES PROTECTED. <br /> ESTABLISHED IN THE DIGITAL HORIZON.
               </p>
+              <DeveloperLogo className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100" />
            </div>
         </div>
       </div>

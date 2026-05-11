@@ -6,6 +6,8 @@ import { Facebook, Twitter, Instagram, Youtube } from '@/components/ui/social-ic
 import { Mail, MapPin, Phone, ArrowUpRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import DeveloperLogo from '@/components/ui/developerlogo';
+
 
 export default function FooterV2() {
   const currentYear = new Date().getFullYear();
@@ -132,6 +134,7 @@ export default function FooterV2() {
               <Link href="/terms" className="hover:text-primary transition-colors">Terms of Service</Link>
               <Link href="/sitemap" className="hover:text-primary transition-colors">Architecture</Link>
            </div>
+           <DeveloperLogo className="opacity-40 grayscale hover:grayscale-0 hover:opacity-100 invert" />
         </div>
       </div>
     </footer>

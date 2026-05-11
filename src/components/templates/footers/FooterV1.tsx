@@ -9,6 +9,8 @@ import {
   Mail
 } from 'lucide-react';
 import { Logo } from '@/components/ui/logo';
+import DeveloperLogo from '@/components/ui/developerlogo';
+
 
 async function getGlobalSettings() {
   try {
@@ -108,46 +110,52 @@ export default async function FooterV1() {
           </div>
         </div>
 
-        <div className="mt-12 flex flex-col items-center justify-between border-t py-6 sm:flex-row text-sm text-muted-foreground">
-          <p>© {new Date().getFullYear()} {settings?.brandName || 'BD Dukan'}. All rights reserved.</p>
+        <div className="mt-12 flex flex-col items-center justify-between border-t py-6 sm:flex-row text-sm text-muted-foreground gap-4">
+          <div className="flex flex-col sm:flex-row items-center gap-4">
+            <p>© {new Date().getFullYear()} {settings?.brandName || 'BD Dukan'}. All rights reserved.</p>
+          </div>
 
-          <div className="flex items-center gap-5 mt-4 sm:mt-0">
-            {Object.entries(socialLinks).map(([platform, url]) => {
-              if (!url) return null;
-              const Icon = socialIconMap[platform];
-              if (!Icon) return null;
+          <div className="flex flex-col sm:flex-row items-center gap-6">
+            <div className="flex items-center gap-5">
+              {Object.entries(socialLinks).map(([platform, url]) => {
+                if (!url) return null;
+                const Icon = socialIconMap[platform];
+                if (!Icon) return null;
 
-              // Security: Validate protocol to prevent injection (e.g. javascript:)
-              let safeUrl = "#";
-              try {
-                const parsedUrl = new URL(url as string);
-                if (['http:', 'https:', 'mailto:'].includes(parsedUrl.protocol)) {
-                  safeUrl = url as string;
-                } else {
-                  return null; // Skip unsafe protocols
+                // Security: Validate protocol to prevent injection (e.g. javascript:)
+                let safeUrl = "#";
+                try {
+                  const parsedUrl = new URL(url as string);
+                  if (['http:', 'https:', 'mailto:'].includes(parsedUrl.protocol)) {
+                    safeUrl = url as string;
+                  } else {
+                    return null; // Skip unsafe protocols
+                  }
+                } catch (e) {
+                  // Allow relative paths starting with /
+                  if (typeof url === 'string' && url.startsWith('/')) {
+                    safeUrl = url;
+                  } else {
+                    return null; // Skip invalid URLs
+                  }
                 }
-              } catch (e) {
-                // Allow relative paths starting with /
-                if (typeof url === 'string' && url.startsWith('/')) {
-                  safeUrl = url;
-                } else {
-                  return null; // Skip invalid URLs
-                }
-              }
 
-              return (
-                <a
-                  key={platform}
-                  href={safeUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-primary transition-all hover:scale-110"
-                  aria-label={socialLabels[platform] || platform}
-                >
-                  <Icon size={18} strokeWidth={2.5} />
-                </a>
-              );
-            })}
+                return (
+                  <a
+                    key={platform}
+                    href={safeUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-primary transition-all hover:scale-110"
+                    aria-label={socialLabels[platform] || platform}
+                  >
+                    <Icon size={18} strokeWidth={2.5} />
+                  </a>
+                );
+              })}
+            </div>
+            <div className="border-l pl-6 hidden sm:block h-4 border-muted-foreground/20" />
+            <DeveloperLogo />
           </div>
         </div>
       </div>

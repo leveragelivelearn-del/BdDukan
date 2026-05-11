@@ -4,6 +4,8 @@
 import Link from 'next/link';
 import { Instagram, Facebook, Twitter } from '@/components/ui/social-icons';
 import { Star, Mail, MapPin, Phone } from 'lucide-react';
+import DeveloperLogo from '@/components/ui/developerlogo';
+
 
 export default function FooterV4() {
   const currentYear = new Date().getFullYear();
@@ -96,6 +98,7 @@ export default function FooterV4() {
               <Link href="#" className="hover:text-primary transition-colors">Legal</Link>
               <Link href="#" className="hover:text-primary transition-colors">Atelier Map</Link>
            </div>
+           <DeveloperLogo className="opacity-50 grayscale hover:grayscale-0 hover:opacity-100" />
         </div>
       </div>
     </footer>
