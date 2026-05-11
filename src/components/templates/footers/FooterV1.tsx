@@ -46,6 +46,15 @@ const socialLabels: Record<string, string> = {
 export default async function FooterV1() {
   const settings = await getGlobalSettings();
   const socialLinks = settings?.socialLinks || {};
+  
+  // Ensure social links are displayed even if not set in DB
+  const hasLinks = Object.values(socialLinks).some(v => v);
+  const effectiveSocialLinks = hasLinks ? socialLinks : {
+    facebook: '#',
+    instagram: '#',
+    twitter: '#',
+    whatsapp: '#'
+  };
 
   return (
     <footer className="border-t bg-background pt-12 mt-10">
@@ -57,22 +66,22 @@ export default async function FooterV1() {
               Your ultimate destination for quality products across multiple categories including groceries, electronics, and fashion.
             </p>
             <div className="flex items-center gap-4 mt-2">
-              {Object.entries(socialLinks).map(([platform, url]) => {
+              {Object.entries(effectiveSocialLinks).map(([platform, url]) => {
                 if (!url) return null;
                 const Icon = socialIconMap[platform];
                 if (!Icon) return null;
 
                 let safeUrl = "#";
-                try {
-                  const parsedUrl = new URL(url as string);
-                  if (['http:', 'https:', 'mailto:'].includes(parsedUrl.protocol)) {
-                    safeUrl = url as string;
-                  }
-                } catch (e) {
-                  if (typeof url === 'string' && url.startsWith('/')) {
-                    safeUrl = url;
-                  } else {
-                    return null;
+                if (url && url !== '#') {
+                  try {
+                    const parsedUrl = new URL(url as string);
+                    if (['http:', 'https:', 'mailto:'].includes(parsedUrl.protocol)) {
+                      safeUrl = url as string;
+                    }
+                  } catch (e) {
+                    if (typeof url === 'string' && url.startsWith('/')) {
+                      safeUrl = url;
+                    }
                   }
                 }
 
