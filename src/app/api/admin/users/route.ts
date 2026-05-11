@@ -141,3 +141,50 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
   }
 }
+
+export async function DELETE(req: NextRequest) {
+  try {
+    const session = await auth();
+    const currentUserRole = (session?.user as any)?.role;
+    
+    if (!session || (currentUserRole !== 'admin' && currentUserRole !== 'super_admin')) {
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { userId } = await req.json();
+
+    if (!userId) {
+      return NextResponse.json({ message: 'User ID is required' }, { status: 400 });
+    }
+
+    await connectToDatabase();
+    const domain = await getTenantDomain();
+
+    // Find the user to delete
+    const userToDelete = await User.findOne({ _id: userId, domain });
+
+    if (!userToDelete) {
+      return NextResponse.json({ message: 'User not found' }, { status: 404 });
+    }
+
+    // Prevent deleting super_admin
+    if (userToDelete.role === 'super_admin') {
+      return NextResponse.json({ message: 'Cannot delete a super_admin' }, { status: 403 });
+    }
+
+    // Check if user has orders
+    const orderCount = await Order.countDocuments({ user: userId });
+    if (orderCount > 0) {
+      return NextResponse.json({ 
+        message: `Cannot delete user: This user has ${orderCount} existing orders. Delete orders first or suspend the user instead.` 
+      }, { status: 400 });
+    }
+
+    await User.deleteOne({ _id: userId, domain });
+
+    return NextResponse.json({ message: 'User deleted successfully' });
+  } catch (error) {
+    console.error('Delete User Error:', error);
+    return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
+  }
+}

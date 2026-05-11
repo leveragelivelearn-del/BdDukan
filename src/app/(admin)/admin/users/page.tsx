@@ -25,7 +25,8 @@ import {
   CreditCard,
   ArrowRight,
   ShieldCheck,
-  UserCog
+  UserCog,
+  Trash2
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -143,6 +144,29 @@ export default function UsersPage() {
       toast.error('Error assigning admin');
     } finally {
       setIsAssigning(false);
+    }
+  };
+ 
+  const handleDeleteUser = async (userId: string, userName: string) => {
+    const confirm = window.confirm(`Are you sure you want to permanently delete user "${userName}"? This action cannot be undone.`);
+    if (!confirm) return;
+
+    try {
+      const response = await fetch('/api/admin/users', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId }),
+      });
+
+      if (response.ok) {
+        toast.success(`User "${userName}" deleted successfully`);
+        fetchUsers();
+      } else {
+        const error = await response.json();
+        toast.error(error.message || 'Failed to delete user');
+      }
+    } catch (error) {
+      toast.error('Error deleting user');
     }
   };
 
@@ -291,6 +315,12 @@ export default function UsersPage() {
                           <DropdownMenuSeparator />
                           <DropdownMenuItem className="text-destructive cursor-pointer font-medium">
                             <ShieldAlert className="mr-2 h-4 w-4" /> Suspend User
+                          </DropdownMenuItem>
+                          <DropdownMenuItem 
+                            onClick={() => handleDeleteUser(user._id, user.name)}
+                            className="text-destructive cursor-pointer font-bold bg-red-50 hover:bg-red-100 mt-1"
+                          >
+                            <Trash2 className="mr-2 h-4 w-4" /> Delete User
                           </DropdownMenuItem>
                         </DropdownMenuGroup>
                       </DropdownMenuContent>
