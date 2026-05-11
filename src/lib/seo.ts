@@ -60,3 +60,19 @@ export function generateBreadcrumbSchema(items: { name: string; item: string }[]
     })),
   };
 }
+
+export function generateBlogSchema(blog: any) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: blog.title,
+    image: blog.thumbnail ? [blog.thumbnail] : [],
+    datePublished: blog.createdAt,
+    dateModified: blog.updatedAt || blog.createdAt,
+    author: {
+      '@type': 'Organization',
+      name: 'BD Dukan',
+    },
+    description: blog.metaDescription || blog.title,
+  };
+}

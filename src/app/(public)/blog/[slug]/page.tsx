@@ -6,9 +6,16 @@ import { getTenantDomain } from '@/lib/tenant';
 import { BlogDetailsSelector } from '@/components/templates/ServerRegistry';
 import { ViewTracker } from '@/components/common/ViewTracker';
 
+import { generateBlogSchema, generateBreadcrumbSchema } from '@/lib/seo';
+import Script from 'next/script';
+
 interface BlogDetailProps {
   params: Promise<{ slug: string }>;
 }
+
+const sanitizeForScript = (json: any) => {
+  return JSON.stringify(json).replace(/</g, '\\u003c').replace(/>/g, '\\u003e');
+};
 
 const getReadingTime = (content: string) => {
   const words = content ? content.split(' ').length : 0;
@@ -26,15 +33,26 @@ export async function generateMetadata({ params }: BlogDetailProps): Promise<Met
 
   if (!blog) return { title: 'Blog Not Found' };
 
+  const title = blog.metaTitle || blog.title;
+  const description = blog.metaDescription || blog.title;
+  const image = blog.thumbnail ? [blog.thumbnail] : [];
+
   return {
-    title: blog.metaTitle || blog.title,
-    description: blog.metaDescription,
+    title,
+    description,
     openGraph: {
-      title: blog.metaTitle || blog.title,
-      description: blog.metaDescription,
-      images: blog.thumbnail ? [blog.thumbnail] : [],
+      title,
+      description,
+      images: image,
       type: 'article',
+      url: `${process.env.NEXTAUTH_URL || 'https://www.bd-dukan.com'}/blog/${slug}`,
     },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: image,
+    }
   };
 }
 
@@ -55,8 +73,29 @@ export default async function BlogDetailPage({ params }: BlogDetailProps) {
   const style = settings?.uiTemplates?.blogDetail || 'v1';
   const blogId = blog._id.toString();
 
+  const blogSchema = generateBlogSchema(blog);
+  const breadcrumbSchema = generateBreadcrumbSchema([
+    { name: 'Home', item: '/' },
+    { name: 'Blog', item: '/blog' },
+    { name: blog.title, item: `/blog/${blog.slug}` }
+  ]);
+
   return (
     <>
+      {blogSchema && (
+        <Script
+          id="blog-schema"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: sanitizeForScript(blogSchema) }}
+        />
+      )}
+      {breadcrumbSchema && (
+        <Script
+          id="breadcrumb-schema"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: sanitizeForScript(breadcrumbSchema) }}
+        />
+      )}
       <ViewTracker id={blogId} type="blog" />
       <BlogDetailsSelector 
         style={style} 

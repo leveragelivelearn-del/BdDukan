@@ -36,7 +36,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       title: product.name,
       description: safeDescription,
       images: mainImage,
-      type: 'article',
+      type: 'website',
+      url: `${process.env.NEXTAUTH_URL || 'https://www.bd-dukan.com'}/product/${slug}`,
     },
     twitter: {
       card: 'summary_large_image',
