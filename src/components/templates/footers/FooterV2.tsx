@@ -7,10 +7,25 @@ import { Mail, MapPin, Phone, ArrowUpRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import DeveloperLogo from '@/components/ui/developerlogo';
+import { useSettings } from '@/components/SettingsProvider';
+import * as SocialIcons from '@/components/ui/social-icons';
+import { Circle } from 'lucide-react';
 
+const socialIconMap: Record<string, any> = {
+  facebook: SocialIcons.Facebook || Circle,
+  twitter: SocialIcons.Twitter || SocialIcons.X || Circle,
+  instagram: SocialIcons.Instagram || Circle,
+  youtube: SocialIcons.Youtube || Circle,
+  linkedin: SocialIcons.Linkedin || Circle,
+  tiktok: SocialIcons.Tiktok || Circle,
+  whatsapp: SocialIcons.Whatsapp || Circle,
+};
 
 export default function FooterV2() {
   const currentYear = new Date().getFullYear();
+  const settings = useSettings();
+  const socialLinks = settings?.socialLinks || {};
+  const hasSocialLinks = Object.values(socialLinks).some(v => v);
 
   const LINKS = {
     discovery: [
@@ -40,25 +55,28 @@ export default function FooterV2() {
             <p className="text-neutral-500 text-lg max-w-sm leading-relaxed font-medium italic">
               Curating high-precision commerce experiences for the modern explorer. Established in Dhaka, reaching globally.
             </p>
-            <div className="flex items-center gap-6">
-               {[
-                 { Icon: Facebook, label: 'Facebook', href: 'https://facebook.com' },
-                 { Icon: Twitter, label: 'Twitter', href: 'https://twitter.com' },
-                 { Icon: Instagram, label: 'Instagram', href: 'https://instagram.com' },
-                 { Icon: Youtube, label: 'Youtube', href: 'https://youtube.com' }
-               ].map(({ Icon, label, href }) => (
-                 <Link 
-                   key={label} 
-                   href={href} 
-                   target="_blank"
-                   rel="noopener noreferrer"
-                   aria-label={`Follow us on ${label}`}
-                   className="h-12 w-12 rounded-full border border-white/10 flex items-center justify-center hover:bg-primary hover:border-primary transition-all group"
-                 >
-                    <Icon className="h-5 w-5 text-neutral-400 group-hover:text-white" />
-                 </Link>
-               ))}
-            </div>
+            {hasSocialLinks && (
+              <div className="flex items-center gap-6">
+                {Object.entries(socialLinks).map(([platform, url]) => {
+                  if (!url) return null;
+                  const Icon = socialIconMap[platform];
+                  if (!Icon) return null;
+
+                  return (
+                    <Link 
+                      key={platform} 
+                      href={url as string} 
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`Follow us on ${platform}`}
+                      className="h-12 w-12 rounded-full border border-white/10 flex items-center justify-center hover:bg-primary hover:border-primary transition-all group"
+                    >
+                        <Icon className="h-5 w-5 text-neutral-400 group-hover:text-white" />
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
           </div>
 
           {/* Navigation Modules */}

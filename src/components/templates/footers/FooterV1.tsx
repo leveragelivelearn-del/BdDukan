@@ -14,9 +14,11 @@ import DeveloperLogo from '@/components/ui/developerlogo';
 
 async function getGlobalSettings() {
   try {
-    const { getTenantDomain } = await import('@/lib/tenant');
-    const domain = await getTenantDomain();
-    return await GlobalSettings.findOne({ domain }).lean();
+    const { headers } = await import('next/headers');
+    const headersList = await headers();
+    const hostname = headersList.get('host') || 'localhost';
+    const { getCachedSettings } = await import('@/lib/data-fetching');
+    return await getCachedSettings(hostname);
   } catch (error) {
     console.error('Error fetching settings for footer:', error);
     return null;
@@ -46,15 +48,7 @@ const socialLabels: Record<string, string> = {
 export default async function FooterV1() {
   const settings = await getGlobalSettings();
   const socialLinks = settings?.socialLinks || {};
-  
-  // Ensure social links are displayed even if not set in DB
-  const hasLinks = Object.values(socialLinks).some(v => v);
-  const effectiveSocialLinks = hasLinks ? socialLinks : {
-    facebook: '#',
-    instagram: '#',
-    twitter: '#',
-    whatsapp: '#'
-  };
+  const hasSocialLinks = Object.values(socialLinks).some(v => v);
 
   return (
     <footer className="border-t bg-background pt-12 mt-10">
@@ -65,8 +59,9 @@ export default async function FooterV1() {
             <p className="text-sm text-muted-foreground w-full md:w-4/5">
               Your ultimate destination for quality products across multiple categories including groceries, electronics, and fashion.
             </p>
-            <div className="flex items-center gap-4 mt-2">
-              {Object.entries(effectiveSocialLinks).map(([platform, url]) => {
+            {hasSocialLinks && (
+              <div className="flex items-center gap-4 mt-2">
+                {Object.entries(socialLinks).map(([platform, url]) => {
                 if (!url) return null;
                 const Icon = socialIconMap[platform];
                 if (!Icon) return null;
@@ -99,8 +94,9 @@ export default async function FooterV1() {
                 );
               })}
             </div>
-          </div>
-          <div className="flex flex-col items-center text-center md:items-start md:text-left">
+          )}
+        </div>
+        <div className="flex flex-col items-center text-center md:items-start md:text-left">
             <h4 className="mb-4 text-sm font-semibold uppercase tracking-widest text-primary">Categories</h4>
             <ul className="grid gap-2 text-sm text-muted-foreground">
               <li>

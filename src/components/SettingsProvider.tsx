@@ -5,6 +5,15 @@ import React, { createContext, useContext } from 'react';
 interface SettingsContextType {
   brandName?: string;
   logoUrl?: string;
+  socialLinks?: {
+    facebook?: string;
+    twitter?: string;
+    instagram?: string;
+    youtube?: string;
+    linkedin?: string;
+    tiktok?: string;
+    whatsapp?: string;
+  };
   uiTemplates?: {
     theme?: string;
     logoFont?: string;

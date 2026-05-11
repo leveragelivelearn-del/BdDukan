@@ -2,13 +2,27 @@
 'use client';
 
 import Link from 'next/link';
-import { Cpu, ShieldCheck, Zap, MoveRight, Mail, Phone, MapPin } from 'lucide-react';
+import { Cpu, ShieldCheck, Zap, MoveRight, Mail, Phone, MapPin, Circle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import DeveloperLogo from '@/components/ui/developerlogo';
+import { useSettings } from '@/components/SettingsProvider';
+import * as SocialIcons from '@/components/ui/social-icons';
 
+const socialIconMap: Record<string, any> = {
+  facebook: SocialIcons.Facebook || Circle,
+  twitter: SocialIcons.Twitter || SocialIcons.X || Circle,
+  instagram: SocialIcons.Instagram || Circle,
+  youtube: SocialIcons.Youtube || Circle,
+  linkedin: SocialIcons.Linkedin || Circle,
+  tiktok: SocialIcons.Tiktok || Circle,
+  whatsapp: SocialIcons.Whatsapp || Circle,
+};
 
 export default function FooterV3() {
   const currentYear = new Date().getFullYear();
+  const settings = useSettings();
+  const socialLinks = settings?.socialLinks || {};
+  const hasSocialLinks = Object.values(socialLinks).some(v => v);
 
   return (
     <footer className="bg-[#0f1111] text-white border-t-2 border-white/5 py-24 px-6 font-mono">
@@ -24,6 +38,28 @@ export default function FooterV3() {
              <p className="text-[10px] text-neutral-500 uppercase tracking-widest leading-relaxed">
                 Systematic commerce architecture. High-precision retail logistics. Distributed from DHAKA_HQ.
              </p>
+             {hasSocialLinks && (
+               <div className="flex items-center gap-4">
+                 {Object.entries(socialLinks).map(([platform, url]) => {
+                   if (!url) return null;
+                   const Icon = socialIconMap[platform];
+                   if (!Icon) return null;
+
+                   return (
+                     <Link 
+                       key={platform} 
+                       href={url as string} 
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       className="text-neutral-500 hover:text-primary transition-all hover:scale-110"
+                       aria-label={platform}
+                     >
+                       <Icon size={16} strokeWidth={2} />
+                     </Link>
+                   );
+                 })}
+               </div>
+             )}
              <div className="flex items-center gap-3">
                 <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
                 <span className="text-[9px] font-black uppercase tracking-widest text-emerald-500/60">SYS_STATUS: OPTIMAL</span>

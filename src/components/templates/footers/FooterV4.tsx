@@ -5,10 +5,25 @@ import Link from 'next/link';
 import { Instagram, Facebook, Twitter } from '@/components/ui/social-icons';
 import { Star, Mail, MapPin, Phone } from 'lucide-react';
 import DeveloperLogo from '@/components/ui/developerlogo';
+import { useSettings } from '@/components/SettingsProvider';
+import * as SocialIcons from '@/components/ui/social-icons';
+import { Circle } from 'lucide-react';
 
+const socialIconMap: Record<string, any> = {
+  facebook: SocialIcons.Facebook || Circle,
+  twitter: SocialIcons.Twitter || SocialIcons.X || Circle,
+  instagram: SocialIcons.Instagram || Circle,
+  youtube: SocialIcons.Youtube || Circle,
+  linkedin: SocialIcons.Linkedin || Circle,
+  tiktok: SocialIcons.Tiktok || Circle,
+  whatsapp: SocialIcons.Whatsapp || Circle,
+};
 
 export default function FooterV4() {
   const currentYear = new Date().getFullYear();
+  const settings = useSettings();
+  const socialLinks = settings?.socialLinks || {};
+  const hasSocialLinks = Object.values(socialLinks).some(v => v);
 
   return (
     <footer className="bg-[#fdfdfd] dark:bg-[#050505] pt-32 pb-16 px-6 border-t border-neutral-100 dark:border-neutral-900">
@@ -28,22 +43,28 @@ export default function FooterV4() {
              <p className="text-muted-foreground text-lg font-serif italic leading-relaxed max-w-xs">
                 Exquisite collections curated for the discerning collector. Discover the art of intentional commerce.
              </p>
-             <div className="flex items-center gap-8">
-                {[
-                  { Icon: Instagram, label: 'Instagram' },
-                  { Icon: Facebook, label: 'Facebook' },
-                  { Icon: Twitter, label: 'Twitter' }
-                ].map(({ Icon, label }) => (
-                  <Link 
-                    key={label} 
-                    href="#" 
-                    aria-label={`Follow us on ${label}`}
-                    className="text-neutral-400 hover:text-primary transition-colors"
-                  >
-                     <Icon className="h-5 w-5 stroke-[1.5]" />
-                  </Link>
-                ))}
-             </div>
+            {hasSocialLinks && (
+              <div className="flex items-center gap-8">
+                {Object.entries(socialLinks).map(([platform, url]) => {
+                  if (!url) return null;
+                  const Icon = socialIconMap[platform];
+                  if (!Icon) return null;
+
+                  return (
+                    <Link 
+                      key={platform} 
+                      href={url as string} 
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`Follow us on ${platform}`}
+                      className="text-neutral-400 hover:text-primary transition-colors"
+                    >
+                        <Icon className="h-5 w-5 stroke-[1.5]" />
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
           </div>
 
           {/* Elegant Navigation */}
