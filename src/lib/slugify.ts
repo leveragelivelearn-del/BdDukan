@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from 'mongoose'; // Fixed build error
 import { slugify as tSlugify } from 'transliteration';
 
 /**
