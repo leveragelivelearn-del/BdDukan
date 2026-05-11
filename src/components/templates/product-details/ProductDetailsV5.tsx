@@ -15,7 +15,7 @@ export default async function ProductDetailsV5({ product }: { product: any }) {
     notFound();
   }
 
-  const productSchema = generateProductSchema(product);
+  const productSchema = await generateProductSchema(product);
   const breadcrumbSchema = generateBreadcrumbSchema([
     { name: 'Home', item: '/' },
     { name: 'Shop', item: '/shop' },

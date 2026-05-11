@@ -66,8 +66,6 @@ export default async function BlogDetailPage({ params }: BlogDetailProps) {
   const domain = await getTenantDomain();
   const headersList = await headers();
   const hostname = headersList.get('host') || 'localhost';
-  const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
-  const baseUrl = `${protocol}://${hostname}`;
 
   const [blog, settings] = await Promise.all([
     getBlog(domain, slug),
@@ -80,11 +78,11 @@ export default async function BlogDetailPage({ params }: BlogDetailProps) {
   const style = settings?.uiTemplates?.blogDetail || 'v1';
   const blogId = blog._id.toString();
 
-  const blogSchema = generateBlogSchema(blog, baseUrl);
+  const blogSchema = await generateBlogSchema(blog);
   const breadcrumbSchema = generateBreadcrumbSchema([
     { name: 'Home', item: '/' },
     { name: 'Blog', item: '/blog' },
-    { name: blog.title, item: `${baseUrl}/blog/${blog.slug}` }
+    { name: blog.title, item: `/blog/${blog.slug}` }
   ]);
 
   return (

@@ -24,7 +24,7 @@ export default async function ProductDetailsV1({ product }: { product: any }) {
     );
   }
 
-  const productSchema = generateProductSchema(product);
+  const productSchema = await generateProductSchema(product);
   const breadcrumbSchema = generateBreadcrumbSchema([
     { name: 'Home', item: '/' },
     { name: 'Shop', item: '/shop' },

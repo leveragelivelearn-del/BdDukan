@@ -61,8 +61,6 @@ export default async function ProductDetailsPage({ params }: { params: Promise<{
   const domain = await getTenantDomain();
   const headersList = await headers();
   const hostname = headersList.get('host') || 'localhost';
-  const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
-  const baseUrl = `${protocol}://${hostname}`;
 
   const [product, settings] = await Promise.all([
     getProduct(domain, slug),
@@ -98,11 +96,11 @@ export default async function ProductDetailsPage({ params }: { params: Promise<{
     related = [];
   }
 
-  const productSchema = generateProductSchema(product, baseUrl);
+  const productSchema = await generateProductSchema(product);
   const breadcrumbSchema = generateBreadcrumbSchema([
     { name: 'Home', item: '/' },
     { name: 'Shop', item: '/shop' },
-    { name: product.name, item: `${baseUrl}/product/${product.slug}` }
+    { name: product.name, item: `/product/${product.slug}` }
   ]);
 
   return (

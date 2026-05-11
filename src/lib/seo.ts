@@ -1,9 +1,14 @@
-/**
- * SEO Utilities for BD Dukan
- * Generates Structured Data (JSON-LD) for Search Engines
- */
+import { headers } from 'next/headers';
 
-export function generateOrganizationSchema(settings: any, baseUrl: string) {
+async function getBaseUrl() {
+  const headersList = await headers();
+  const host = headersList.get('host') || 'localhost';
+  const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
+  return `${protocol}://${host}`;
+}
+
+export async function generateOrganizationSchema(settings: any) {
+  const baseUrl = await getBaseUrl();
   return {
     '@context': 'https://schema.org',
     '@type': 'Organization',
@@ -23,8 +28,9 @@ export function generateOrganizationSchema(settings: any, baseUrl: string) {
   };
 }
 
-export function generateProductSchema(product: any, baseUrl: string) {
+export async function generateProductSchema(product: any) {
   const price = product.salePrice ?? product.price;
+  const baseUrl = await getBaseUrl();
   
   return {
     '@context': 'https://schema.org',
@@ -61,7 +67,8 @@ export function generateBreadcrumbSchema(items: { name: string; item: string }[]
   };
 }
 
-export function generateBlogSchema(blog: any, baseUrl: string) {
+export async function generateBlogSchema(blog: any) {
+  const baseUrl = await getBaseUrl();
   return {
     '@context': 'https://schema.org',
     '@type': 'BlogPosting',
