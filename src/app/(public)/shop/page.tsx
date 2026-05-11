@@ -5,10 +5,33 @@ import { getTenantDomain } from '@/lib/tenant';
 import { ShopHeaderSkeleton, ProductCardSkeleton } from '@/components/storefront/Skeletons';
 import { ShopListingSelector } from '@/components/templates/ServerRegistry';
 
-export const metadata = {
-  title: 'Shop | BD Dukan',
-  description: 'Discover Products That Match Your Style. Filter by category, budget, and latest arrivals.',
-};
+import { Metadata } from 'next';
+
+export async function generateMetadata(): Promise<Metadata> {
+  const headersList = await headers();
+  const hostname = headersList.get('host') || 'localhost';
+  const settings = await getCachedSettings(hostname);
+  const brandName = settings?.brandName || 'BD Dukan';
+  const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
+  const baseUrl = `${protocol}://${hostname}`;
+
+  return {
+    title: `Shop | ${brandName}`,
+    description: `Discover Products That Match Your Style at ${brandName}. Filter by category, budget, and latest arrivals.`,
+    openGraph: {
+      title: `Shop | ${brandName}`,
+      description: `Explore the wide range of products at ${brandName}.`,
+      url: `${baseUrl}/shop`,
+      siteName: brandName,
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `Shop | ${brandName}`,
+      description: `Explore the wide range of products at ${brandName}.`,
+    },
+  };
+}
 
 export default async function ShopPage({ searchParams }: { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
   const domain = await getTenantDomain();

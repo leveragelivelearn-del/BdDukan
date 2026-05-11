@@ -4,10 +4,31 @@ import { getCachedBlogs, getCachedSettings } from '@/lib/data-fetching';
 import { getTenantDomain } from '@/lib/tenant';
 import { BlogListingSelector } from '@/components/templates/ServerRegistry';
 
-export const metadata: Metadata = {
-  title: 'Blog | BD Dukan',
-  description: 'Product ideas, commerce playbooks, and practical updates from BD Dukan.',
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const headersList = await headers();
+  const hostname = headersList.get('host') || 'localhost';
+  const settings = await getCachedSettings(hostname);
+  const brandName = settings?.brandName || 'BD Dukan';
+  const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
+  const baseUrl = `${protocol}://${hostname}`;
+
+  return {
+    title: `Blog | ${brandName}`,
+    description: `Product ideas, commerce playbooks, and practical updates from ${brandName}.`,
+    openGraph: {
+      title: `Blog | ${brandName}`,
+      description: `Stay updated with the latest news and guides from ${brandName}.`,
+      url: `${baseUrl}/blog`,
+      siteName: brandName,
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `Blog | ${brandName}`,
+      description: `Stay updated with the latest news and guides from ${brandName}.`,
+    },
+  };
+}
 
 export default async function BlogListingPage({
   searchParams,

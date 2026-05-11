@@ -22,17 +22,21 @@ const getProduct = async (domain: string, slug: string) => {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const domain = await getTenantDomain();
-  const product = await getProduct(domain, slug);
-  if (!product) return { title: 'Product Not Found' };
-
   const headersList = await headers();
-  const host = headersList.get('host') || 'localhost';
+  const hostname = headersList.get('host') || 'localhost';
   const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
-  const baseUrl = `${protocol}://${host}`;
+  const baseUrl = `${protocol}://${hostname}`;
+
+  const [product, settings] = await Promise.all([
+    getProduct(domain, slug),
+    getCachedSettings(hostname)
+  ]);
+  if (!product) return { title: 'Product Not Found' };
 
   const safeDescription = (product.description ?? '').slice(0, 160);
   const mainImage = product.images?.[0] ? [{ url: product.images[0] }] : [];
   const twitterImage = product.images?.[0] ? [product.images[0]] : [];
+  const siteName = settings?.brandName || 'Online Shop';
 
   return {
     title: product.name,
@@ -43,6 +47,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       images: mainImage,
       type: 'website',
       url: `${baseUrl}/product/${slug}`,
+      siteName: siteName,
     },
     twitter: {
       card: 'summary_large_image',

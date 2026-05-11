@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { Metadata } from 'next';
 import { ArrowRight } from 'lucide-react';
 import connectToDatabase from '@/lib/db';
 import Banner from '@/models/Banner';
@@ -22,6 +23,66 @@ import {
 } from '@/components/storefront/Skeletons';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+
+import { getTenantDomain } from '@/lib/tenant';
+import { headers } from 'next/headers';
+import {
+  getCachedBanners,
+  getCachedCategories,
+  getCachedProducts,
+  getTrendingProducts,
+  getCachedBlogs,
+  getCachedFAQs,
+  getCachedSettings,
+  getCachedActiveCoupon
+} from '@/lib/data-fetching';
+import { generateOrganizationSchema } from '@/lib/seo';
+import Script from 'next/script';
+
+const sanitizeForScript = (json: any) => {
+  return JSON.stringify(json).replace(/</g, '\\u003c').replace(/>/g, '\\u003e');
+};
+
+export async function generateMetadata(): Promise<Metadata> {
+  const headersList = await headers();
+  const hostname = headersList.get('host') || 'localhost';
+  const domain = await getTenantDomain();
+
+  const [settings, banners] = await Promise.all([
+    getCachedSettings(hostname),
+    getCachedBanners(domain)
+  ]);
+
+  const brandName = settings?.brandName || 'BD Dukan';
+  const description = settings?.siteDescription || 'Your ultimate destination for quality products.';
+  const ogImage = banners?.[0]?.imageUrl || settings?.logo || '';
+  
+  const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
+  const baseUrl = `${protocol}://${hostname}`;
+
+  return {
+    title: {
+      default: brandName,
+      template: `%s | ${brandName}`,
+    },
+    description,
+    openGraph: {
+      title: brandName,
+      description,
+      url: baseUrl,
+      siteName: brandName,
+      images: ogImage ? [ogImage] : [],
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: brandName,
+      description,
+      images: ogImage ? [ogImage] : [],
+    },
+    metadataBase: new URL(baseUrl),
+  };
+}
 
 // Lazy load components below the fold
 const CategoryShowcase = dynamic(() => import('@/components/storefront/CategoryShowcase').then(mod => mod.CategoryShowcase), {
@@ -59,19 +120,6 @@ const ComboOfferBanner = dynamic(() => import('@/components/storefront/ComboOffe
 const NewsletterV2 = dynamic(() => import('@/components/storefront/NewsletterV2').then(mod => mod.NewsletterV2), {
   loading: () => <BannerSkeleton />
 });
-
-import { getTenantDomain } from '@/lib/tenant';
-import { headers } from 'next/headers';
-import {
-  getCachedBanners,
-  getCachedCategories,
-  getCachedProducts,
-  getTrendingProducts,
-  getCachedBlogs,
-  getCachedFAQs,
-  getCachedSettings,
-  getCachedActiveCoupon
-} from '@/lib/data-fetching';
 
 async function getHomeData() {
   try {
@@ -138,8 +186,17 @@ export default async function Home() {
     productCard: data.settings?.uiTemplates?.productCard || 'v1'
   };
 
+  const orgSchema = data.settings ? await generateOrganizationSchema(data.settings) : null;
+
   return (
     <div className="flex flex-col min-h-screen">
+      {orgSchema && (
+        <Script
+          id="organization-schema"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: sanitizeForScript(orgSchema) }}
+        />
+      )}
       {/* 0. Free Delivery Announcement Bar */}
       <FreeDeliveryBanner settings={data.settings} />
 

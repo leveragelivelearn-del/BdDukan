@@ -29,18 +29,22 @@ async function getBlog(domain: string, slug: string) {
 export async function generateMetadata({ params }: BlogDetailProps): Promise<Metadata> {
   const { slug } = await params;
   const domain = await getTenantDomain();
-  const blog = await getBlog(domain, slug);
+  const headersList = await headers();
+  const hostname = headersList.get('host') || 'localhost';
+  const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
+  const baseUrl = `${protocol}://${hostname}`;
+
+  const [blog, settings] = await Promise.all([
+    getBlog(domain, slug),
+    getCachedSettings(hostname)
+  ]);
 
   if (!blog) return { title: 'Blog Not Found' };
-
-  const headersList = await headers();
-  const host = headersList.get('host') || 'localhost';
-  const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
-  const baseUrl = `${protocol}://${host}`;
 
   const title = blog.metaTitle || blog.title;
   const description = blog.metaDescription || blog.title;
   const image = blog.thumbnail ? [blog.thumbnail] : [];
+  const siteName = settings?.brandName || 'Online Shop';
 
   return {
     title,
@@ -51,6 +55,7 @@ export async function generateMetadata({ params }: BlogDetailProps): Promise<Met
       images: image,
       type: 'article',
       url: `${baseUrl}/blog/${slug}`,
+      siteName: siteName,
     },
     twitter: {
       card: 'summary_large_image',
