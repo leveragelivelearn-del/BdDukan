@@ -46,6 +46,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import Swal from 'sweetalert2';
 
 const navItems = [
   { href: '/', label: 'Home' },
@@ -151,7 +152,12 @@ export default function Navbar() {
       (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
 
     if (!SpeechRecognition) {
-      alert('Voice search is not supported in your browser. Please use Chrome.');
+      Swal.fire({
+        title: 'Voice Search Unsupported',
+        text: 'Voice search is not supported in your browser. Please use Google Chrome for the best experience.',
+        icon: 'info',
+        confirmButtonColor: '#00D1B2'
+      });
       return;
     }
 

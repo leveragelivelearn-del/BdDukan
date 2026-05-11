@@ -22,6 +22,7 @@ import {
 import { ExpenseForm } from '@/components/admin/ExpenseForm';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
+import Swal from 'sweetalert2';
 
 export default function ExpensesPage() {
   const [expenses, setExpenses] = useState<any[]>([]);
@@ -48,7 +49,16 @@ export default function ExpensesPage() {
   }, []);
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this expense?')) return;
+    const result = await Swal.fire({
+      title: 'Delete Expense?',
+      text: 'Are you sure you want to delete this expense record?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#ef4444',
+      confirmButtonText: 'Yes, delete it!'
+    });
+
+    if (!result.isConfirmed) return;
     try {
       const res = await fetch(`/api/admin/expenses/${id}`, { method: 'DELETE' });
       if (res.ok) {

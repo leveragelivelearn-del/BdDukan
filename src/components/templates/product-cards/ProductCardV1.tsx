@@ -21,6 +21,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useState } from 'react';
 import { QuickAddModal } from './QuickAddModal';
+import Swal from 'sweetalert2';
 
 interface ProductCardProps {
   product: {
@@ -120,7 +121,16 @@ export default function ProductCardV1({ product, isFlashSale }: ProductCardProps
   const handleDeleteProduct = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!confirm('Are you sure you want to delete this product?')) return;
+    const result = await Swal.fire({
+      title: 'Delete Product?',
+      text: 'Are you sure you want to delete this product? This action is permanent.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#ef4444',
+      confirmButtonText: 'Yes, delete it!'
+    });
+
+    if (!result.isConfirmed) return;
     try {
       const res = await fetch(`/api/products/${product.slug}`, {
         method: 'DELETE',

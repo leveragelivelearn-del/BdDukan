@@ -39,6 +39,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 import { CouponForm } from '@/components/admin/CouponForm';
+import Swal from 'sweetalert2';
 
 export default function CouponsPage() {
   const [coupons, setCoupons] = useState<any[]>([]);
@@ -69,7 +70,16 @@ export default function CouponsPage() {
   }, []);
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this coupon?')) return;
+    const result = await Swal.fire({
+      title: 'Delete Coupon?',
+      text: 'Are you sure you want to delete this coupon? This cannot be undone.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#ef4444',
+      confirmButtonText: 'Yes, delete it!'
+    });
+
+    if (!result.isConfirmed) return;
 
     try {
       const response = await fetch(`/api/admin/coupons/${id}`, {

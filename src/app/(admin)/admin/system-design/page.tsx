@@ -30,6 +30,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ImageUpload } from '@/components/ui/image-upload';
+import Swal from 'sweetalert2';
 
 
 
@@ -149,7 +150,16 @@ export default function SuperConfigPage() {
   };
 
   const handleRepair = async () => {
-    if (!confirm('This will sync all orphaned data (products, orders, etc.) to the current domain. Continue?')) return;
+    const result = await Swal.fire({
+      title: 'Repair Database?',
+      text: 'This will sync all orphaned data (products, orders, etc.) to the current domain. This action is intensive. Continue?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#2563eb',
+      confirmButtonText: 'Yes, repair now'
+    });
+
+    if (!result.isConfirmed) return;
     
     setSaving(true);
     try {

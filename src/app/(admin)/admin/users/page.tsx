@@ -39,6 +39,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { toast } from 'sonner';
 import Image from 'next/image';
+import Swal from 'sweetalert2';
 import {
   Dialog,
   DialogContent,
@@ -97,8 +98,22 @@ export default function UsersPage() {
   };
 
   const handleUpdateRole = async (userId: string, newRole: string) => {
-    const confirm = window.confirm(`Are you sure you want to change this user's role to ${newRole}?`);
-    if (!confirm) return;
+    const result = await Swal.fire({
+      title: 'Change User Role?',
+      text: `Are you sure you want to change this user's role to ${newRole}?`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#2563eb', // blue-600
+      cancelButtonColor: '#64748b', // slate-500
+      confirmButtonText: 'Yes, change it!',
+      customClass: {
+        popup: 'rounded-3xl',
+        confirmButton: 'rounded-xl font-bold px-6 py-3',
+        cancelButton: 'rounded-xl font-bold px-6 py-3'
+      }
+    });
+
+    if (!result.isConfirmed) return;
 
     try {
       const response = await fetch('/api/admin/users', {
@@ -148,8 +163,22 @@ export default function UsersPage() {
   };
  
   const handleDeleteUser = async (userId: string, userName: string) => {
-    const confirm = window.confirm(`Are you sure you want to permanently delete user "${userName}"? This action cannot be undone.`);
-    if (!confirm) return;
+    const result = await Swal.fire({
+      title: 'Delete User?',
+      text: `Are you sure you want to permanently delete user "${userName}"? This action cannot be undone.`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#ef4444', // red-500
+      cancelButtonColor: '#64748b', // slate-500
+      confirmButtonText: 'Yes, delete permanently!',
+      customClass: {
+        popup: 'rounded-3xl',
+        confirmButton: 'rounded-xl font-bold px-6 py-3',
+        cancelButton: 'rounded-xl font-bold px-6 py-3'
+      }
+    });
+
+    if (!result.isConfirmed) return;
 
     try {
       const response = await fetch('/api/admin/users', {

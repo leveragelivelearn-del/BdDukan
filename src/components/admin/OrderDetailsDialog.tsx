@@ -14,6 +14,7 @@ import { Loader2, Mail, Phone, MapPin, CreditCard, Calendar, Truck, ExternalLink
 import { format, isValid } from 'date-fns';
 import { toast } from 'sonner';
 import { generateInvoicePDF } from '@/lib/invoice-generator';
+import Swal from 'sweetalert2';
 
 interface OrderDetailsDialogProps {
   orderId: string | null;
@@ -313,8 +314,16 @@ export default function OrderDetailsDialog({
                       <button
                         disabled={bookingLoading}
                         onClick={async () => {
-                          const conf = window.confirm(`Hand over order #${order._id} to ${settings?.courierConfig?.activeProvider}?`);
-                          if (!conf) return;
+                          const result = await Swal.fire({
+                            title: 'Book Courier?',
+                            text: `Hand over order #${order._id} to ${settings?.courierConfig?.activeProvider}?`,
+                            icon: 'question',
+                            showCancelButton: true,
+                            confirmButtonColor: '#00D1B2',
+                            confirmButtonText: 'Yes, book now!'
+                          });
+                          
+                          if (!result.isConfirmed) return;
                           
                           setBookingLoading(true);
                           try {

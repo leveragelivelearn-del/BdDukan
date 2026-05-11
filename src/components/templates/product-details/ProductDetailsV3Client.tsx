@@ -18,6 +18,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import Swal from 'sweetalert2';
 
 interface ProductDetailsV3ClientProps {
   product: any;
@@ -120,7 +121,16 @@ export default function ProductDetailsV3Client({ product }: ProductDetailsV3Clie
   };
 
   const handleDeleteProduct = async () => {
-    if (!confirm('Execute deletion sequence?')) return;
+    const result = await Swal.fire({
+      title: 'Purge Product?',
+      text: 'Execute deletion sequence? This action is irreversible.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#ef4444',
+      confirmButtonText: 'Execute Purge'
+    });
+
+    if (!result.isConfirmed) return;
     try {
       const res = await fetch(`/api/products/${product.slug}`, { method: 'DELETE' });
       if (res.ok) {
