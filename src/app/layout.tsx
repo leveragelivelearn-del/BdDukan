@@ -245,10 +245,13 @@ export default async function RootLayout({
   const pathname = headersList.get('x-pathname') || '';
   const settings = await getCachedSettings(hostname);
 
+  const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
+  const baseUrl = `${protocol}://${hostname}`;
+
   let jsonLd = null;
   try {
     if (settings) {
-      jsonLd = generateOrganizationSchema(settings);
+      jsonLd = generateOrganizationSchema(settings, baseUrl);
     }
   } catch (e) {
     console.error("Error generating JSON-LD structured data", e);
