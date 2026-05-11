@@ -126,7 +126,9 @@ export default function NavbarV3() {
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-60 rounded-xl p-2 bg-white border-neutral-100 shadow-2xl">
-                  <DropdownMenuLabel className="px-3 pt-3 pb-1 font-black text-[9px] uppercase tracking-widest text-neutral-400">Authenticated Profile</DropdownMenuLabel>
+                  <DropdownMenuGroup>
+                    <DropdownMenuLabel className="px-3 pt-3 pb-1 font-black text-[9px] uppercase tracking-widest text-neutral-400">Authenticated Profile</DropdownMenuLabel>
+                  </DropdownMenuGroup>
                   <div className="px-3 pb-3 mb-2 border-b">
                     <p className="text-sm font-bold truncate">{session.user?.name}</p>
                     <p className="text-[10px] text-muted-foreground truncate">{session.user?.email}</p>

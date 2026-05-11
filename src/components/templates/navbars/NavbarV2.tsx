@@ -140,7 +140,9 @@ export default function NavbarV2() {
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56 rounded-2xl p-2 bg-black/90 backdrop-blur-3xl text-white border-white/10 shadow-2xl">
-                <DropdownMenuLabel className="px-3 pt-3 pb-1 font-black text-xs uppercase tracking-widest opacity-50">Identity</DropdownMenuLabel>
+                <DropdownMenuGroup>
+                  <DropdownMenuLabel className="px-3 pt-3 pb-1 font-black text-xs uppercase tracking-widest opacity-50">Identity</DropdownMenuLabel>
+                </DropdownMenuGroup>
                 <div className="px-3 pb-3 mb-2 border-b border-white/10">
                    <p className="text-sm font-bold truncate">{session.user?.name}</p>
                    <p className="text-[10px] opacity-60 truncate">{session.user?.email}</p>
