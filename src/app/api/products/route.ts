@@ -3,7 +3,8 @@ import { revalidateTag, revalidatePath } from 'next/cache';
 import connectToDatabase from '@/lib/db';
 import Product from '@/models/Product';
 import { auth } from '@/auth';
-import { generateUniqueSlug } from '@/lib/slugify';
+import { slugify } from '@/lib/slugify';
+import { generateUniqueSlug } from '@/lib/slugify-server';
 import { getTenantDomain } from '@/lib/tenant';
 
 // GET all products
