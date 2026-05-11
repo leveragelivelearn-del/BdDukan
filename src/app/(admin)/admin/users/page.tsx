@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
 import {
   Table,
   TableBody,
@@ -63,6 +64,12 @@ export default function UsersPage() {
   const [loading, setLoading] = useState(true);
   const [selectedUser, setSelectedUser] = useState<UserData | null>(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+  const [isAssignAdminOpen, setIsAssignAdminOpen] = useState(false);
+  const [adminEmail, setAdminEmail] = useState('');
+  const [isAssigning, setIsAssigning] = useState(false);
+
+  const { data: session } = useSession();
+  const isSuperAdmin = (session?.user as any)?.role === 'super_admin';
 
   const fetchUsers = async () => {
     try {
@@ -110,15 +117,54 @@ export default function UsersPage() {
     }
   };
 
+  const handleAssignAdmin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!adminEmail) return;
+
+    setIsAssigning(true);
+    try {
+      const response = await fetch('/api/admin/users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: adminEmail }),
+      });
+
+      if (response.ok) {
+        toast.success(`Successfully assigned Admin role to ${adminEmail}`);
+        setAdminEmail('');
+        setIsAssignAdminOpen(false);
+        fetchUsers();
+      } else {
+        const error = await response.json();
+        toast.error(error.message || 'Failed to assign admin');
+      }
+    } catch (error) {
+      toast.error('Error assigning admin');
+    } finally {
+      setIsAssigning(false);
+    }
+  };
+
   return (
     <div className="flex flex-col gap-6 p-4 md:p-8 animate-in fade-in duration-500">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-black tracking-tighter">Users Management</h1>
-          <p className="text-muted-foreground text-sm">Manage and view all registered customers and staff.</p>
+          <h1 className="text-3xl font-black tracking-tighter text-slate-900">Users Management</h1>
+          <p className="text-muted-foreground text-sm font-medium">Manage and view all registered customers and staff.</p>
         </div>
-        <div className="bg-primary/10 px-4 py-2 rounded-full border border-primary/20">
-          <span className="text-primary font-bold text-sm">{users.length} Total Users</span>
+        <div className="flex items-center gap-3">
+          {isSuperAdmin && (
+            <Button 
+              onClick={() => setIsAssignAdminOpen(true)}
+              className="bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-full px-6 h-11 shadow-lg shadow-blue-200 border-none transition-all hover:scale-105 active:scale-95"
+            >
+              <ShieldCheck className="mr-2 h-4 w-4" />
+              Assign Admin
+            </Button>
+          )}
+          <div className="bg-primary/10 px-5 py-2.5 rounded-full border border-primary/20">
+            <span className="text-primary font-bold text-sm">{users.length} Total Users</span>
+          </div>
         </div>
       </div>
 
@@ -359,6 +405,74 @@ export default function UsersPage() {
               </div>
             </div>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Assign Admin Modal */}
+      <Dialog open={isAssignAdminOpen} onOpenChange={setIsAssignAdminOpen}>
+        <DialogContent className="sm:max-w-[450px] p-0 overflow-hidden rounded-3xl border-none shadow-2xl">
+          <div className="bg-blue-600 p-8 text-white relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl" />
+            <div className="absolute bottom-0 left-0 w-24 h-24 bg-blue-400/20 rounded-full -ml-12 -mb-12 blur-xl" />
+            
+            <DialogHeader className="relative z-10">
+              <div className="h-12 w-12 bg-white/20 rounded-2xl flex items-center justify-center mb-4 backdrop-blur-sm border border-white/30">
+                <ShieldCheck className="h-6 w-6 text-white" />
+              </div>
+              <DialogTitle className="text-2xl font-black tracking-tight text-white">Assign Admin Access</DialogTitle>
+              <p className="text-blue-100 text-sm font-medium mt-1">Grant administrative privileges to a user by email.</p>
+            </DialogHeader>
+          </div>
+
+          <form onSubmit={handleAssignAdmin} className="p-8 space-y-6 bg-white">
+            <div className="space-y-2">
+              <label className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Email Address</label>
+              <div className="relative group">
+                <input
+                  type="email"
+                  value={adminEmail}
+                  onChange={(e) => setAdminEmail(e.target.value)}
+                  placeholder="name@example.com"
+                  required
+                  className="w-full h-14 px-5 rounded-2xl border-2 border-slate-100 bg-slate-50 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all outline-none font-bold text-slate-700"
+                />
+              </div>
+              <div className="flex items-start gap-2 p-3 rounded-xl bg-amber-50 border border-amber-100 mt-2">
+                <div className="h-4 w-4 rounded-full bg-amber-500 flex-shrink-0 mt-0.5" />
+                <p className="text-[10px] text-amber-700 font-bold leading-normal">
+                  NOTE: When this user logs in with Google using this email, they will automatically be granted Admin status.
+                </p>
+              </div>
+            </div>
+            
+            <div className="flex gap-3 pt-2">
+              <Button 
+                type="button"
+                variant="outline"
+                onClick={() => setIsAssignAdminOpen(false)}
+                className="flex-1 h-14 rounded-2xl font-bold border-2 hover:bg-slate-50"
+              >
+                CANCEL
+              </Button>
+              <Button 
+                type="submit" 
+                disabled={isAssigning}
+                className="flex-[2] h-14 rounded-2xl font-black bg-blue-600 hover:bg-blue-700 shadow-xl shadow-blue-200 border-none group"
+              >
+                {isAssigning ? (
+                  <>
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                    PROCESSING...
+                  </>
+                ) : (
+                  <>
+                    CONFIRM ASSIGN
+                    <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  </>
+                )}
+              </Button>
+            </div>
+          </form>
         </DialogContent>
       </Dialog>
     </div>

@@ -58,6 +58,50 @@ export async function GET(req: NextRequest) {
   }
 }
 
+export async function POST(req: NextRequest) {
+  try {
+    const session = await auth();
+    const currentUserRole = (session?.user as any)?.role;
+    
+    // Only super_admin can manually assign admins by email
+    if (!session || currentUserRole !== 'super_admin') {
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { email } = await req.json();
+
+    if (!email || !/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.[A-Za-z]{2,})+$/.test(email)) {
+      return NextResponse.json({ message: 'Invalid email address' }, { status: 400 });
+    }
+
+    await connectToDatabase();
+    const domain = await getTenantDomain();
+
+    // Find or Create user with this email and set role to admin
+    // If user already exists, update their role to admin
+    // If they don't exist, we create them with a placeholder name
+    const result = await User.findOneAndUpdate(
+      { email: email.toLowerCase(), domain },
+      { 
+        $set: { role: 'admin' },
+        $setOnInsert: { 
+          name: email.split('@')[0], // Use email prefix as initial name
+          domain
+        }
+      },
+      { upsert: true, new: true }
+    );
+
+    return NextResponse.json({ 
+      message: `Successfully assigned Admin role to ${email}`,
+      user: result
+    });
+  } catch (error) {
+    console.error('Assign Admin Error:', error);
+    return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
+  }
+}
+
 export async function PATCH(req: NextRequest) {
   try {
     const session = await auth();
