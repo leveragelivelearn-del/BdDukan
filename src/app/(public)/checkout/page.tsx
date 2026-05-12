@@ -24,6 +24,7 @@ import { Separator } from '@/components/ui/separator';
 import { Loader2, CreditCard, Truck, ShoppingBag, CheckCircle2, Plus, Minus, X, Globe } from 'lucide-react';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
+import { fbEvent } from '@/lib/fpixel';
 
 import { divisions, bdDivisions, bdLocations } from '@/lib/bd-locations';
 import {
@@ -137,6 +138,29 @@ export default function CheckoutPage() {
     }
     fetchLoyaltyData();
   }, [form]);
+
+  const hasTrackedInitiate = useRef(false);
+  // Track InitiateCheckout
+  useEffect(() => {
+    if (isHydrated && items.length > 0 && !hasTrackedInitiate.current) {
+      const validItems = items.filter(i => i.productId);
+      if (validItems.length === 0) return;
+
+      fbEvent('InitiateCheckout', {
+        content_ids: validItems.map(i => i.productId),
+        content_type: 'product',
+        value: totalAmount,
+        currency: 'BDT',
+        num_items: validItems.length,
+        contents: validItems.map(i => ({
+          id: i.productId,
+          quantity: i.quantity,
+          item_price: i.price
+        }))
+      });
+      hasTrackedInitiate.current = true;
+    }
+  }, [isHydrated, items, totalAmount]); 
 
   const submissionSucceededRef = useRef(false);
 

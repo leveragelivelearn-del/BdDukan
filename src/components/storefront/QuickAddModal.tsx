@@ -13,6 +13,7 @@ import { useState, useMemo, useEffect } from 'react';
 import { useAppDispatch } from '@/store/hooks';
 import { addToCart } from '@/store/slices/cartSlice';
 import { toast } from 'sonner';
+import { fbEvent } from '@/lib/fpixel';
 
 interface QuickAddModalProps {
   product: any;
@@ -64,6 +65,16 @@ export function QuickAddModal({ product, isOpen, onClose }: QuickAddModalProps) 
         .filter(Boolean);
       const initialSize = initialSizes[0] || null;
       setSelectedSize(initialSize);
+
+      // Track ViewContent for Quick View
+      fbEvent('ViewContent', {
+        content_name: product.name,
+        content_category: product.categories?.[0]?.name || 'Uncategorized',
+        content_ids: [product._id],
+        content_type: 'product',
+        value: product.salePrice || product.price,
+        currency: 'BDT'
+      });
     }
   }, [isOpen, uniqueColors, product.variants]);
 
@@ -97,6 +108,18 @@ export function QuickAddModal({ product, isOpen, onClose }: QuickAddModalProps) 
       color: selectedColor || undefined,
       size: selectedSize || undefined
     }));
+
+    // Track AddToCart
+    fbEvent('AddToCart', {
+      content_name: product.name,
+      content_category: product.categories?.[0]?.name || 'Uncategorized',
+      content_ids: [product._id],
+      content_type: 'product',
+      value: displaySalePrice || displayPrice,
+      currency: 'BDT',
+      quantity: 1
+    });
+
     toast.success(`${product.name} added to cart`);
     onClose();
   };

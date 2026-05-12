@@ -14,9 +14,52 @@ function SuccessContent() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // If we have an ID, we could fetch the order details, 
-    // but a success message is usually enough for the UX.
-    setLoading(false);
+    if (!id) {
+      setLoading(false);
+      return;
+    }
+
+    async function fetchOrderAndTrack() {
+      try {
+        const res = await fetch(`/api/orders/${id}`);
+        if (res.ok) {
+          const orderData = await res.json();
+          setOrder(orderData);
+
+          // Track Purchase Event
+          const { fbEvent } = await import('@/lib/fpixel');
+          
+          const safeItems = Array.isArray(orderData.items) ? orderData.items : [];
+          const fullName = orderData.shippingAddress?.fullName || '';
+          const nameParts = fullName ? fullName.trim().split(/\s+/) : [];
+
+          fbEvent('Purchase', {
+            value: orderData.totalAmount,
+            currency: 'BDT',
+            content_ids: safeItems.map((i: any) => i.product?._id || i.product),
+            content_type: 'product',
+            num_items: safeItems.length,
+            contents: safeItems.map((i: any) => ({
+              id: i.product?._id || i.product,
+              quantity: i.quantity,
+              item_price: i.price
+            }))
+          }, {
+            // Note: Hashing is handled server-side in the API route.
+            em: orderData.shippingAddress?.email,
+            ph: orderData.shippingAddress?.phone,
+            fn: nameParts[0] || '',
+            ln: nameParts.slice(1).join(' ') || ''
+          });
+        }
+      } catch (error) {
+        console.error('Failed to fetch order for tracking:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchOrderAndTrack();
   }, [id]);
 
   return (

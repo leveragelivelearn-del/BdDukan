@@ -32,41 +32,18 @@ export default function FacebookPixel({
   const currentEventId = useRef<string>("");
 
   const trackPageView = useCallback(
-    (eventId: string) => {
+    () => {
       if (!pixelId) return;
-      // 1. Browser-side tracking with explicit eventID
-      if (typeof window.fbq === "function") {
-        window.fbq("track", "PageView", {}, { eventID: eventId });
-      } else if (scriptLoaded) {
-        // Retry once if script says loaded but fbq not yet global
-        setTimeout(() => {
-          if (typeof window.fbq === "function") {
-            window.fbq("track", "PageView", {}, { eventID: eventId });
-          }
-        }, 100);
-      }
-      // 2. Server-side (CAPI) tracking with same eventID
-      fetch("/api/facebook/event", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          eventName: "PageView",
-          eventUrl: window.location.href,
-          userAgent: navigator.userAgent,
-          eventId,
-        }),
-      }).catch(() => {
-        /* fail silently — browser pixel is the fallback */
+      import("@/lib/fpixel").then(({ fbEvent }) => {
+        fbEvent("PageView");
       });
     },
     [pixelId]
   );
 
   useEffect(() => {
-    if (!mounted || !pixelId) return;
-    // Generate new eventId on every route change
-    currentEventId.current = crypto.randomUUID();
-    trackPageView(currentEventId.current);
+    if (!mounted || !pixelId || !scriptLoaded) return;
+    trackPageView();
   }, [pathname, searchParams, trackPageView, pixelId, mounted, scriptLoaded]);
 
   // Sanitize pixelId to prevent XSS

@@ -5,6 +5,7 @@ import { getCachedBlogBySlug, getCachedSettings } from '@/lib/data-fetching';
 import { getTenantDomain } from '@/lib/tenant';
 import { BlogDetailsSelector } from '@/components/templates/ServerRegistry';
 import { ViewTracker } from '@/components/common/ViewTracker';
+import { FBBlogTracker } from '@/components/common/FBBlogTracker';
 
 import { generateBlogSchema, generateBreadcrumbSchema } from '@/lib/seo';
 import Script from 'next/script';
@@ -106,6 +107,7 @@ export default async function BlogDetailPage({ params }: BlogDetailProps) {
           dangerouslySetInnerHTML={{ __html: sanitizeForScript(breadcrumbSchema) }}
         />
       )}
+      <FBBlogTracker title={blog.title} id={blogId} />
       <ViewTracker id={blogId} type="blog" />
       <BlogDetailsSelector 
         style={style} 

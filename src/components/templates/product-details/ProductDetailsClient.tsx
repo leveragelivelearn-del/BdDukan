@@ -42,6 +42,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { fbEvent } from '@/lib/fpixel';
 
 const CURRENCY_SYMBOL = '৳';
 
@@ -114,6 +115,16 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
 
     setSelectedImage(0);
     setQuantity(1);
+
+    // Track ViewContent
+    fbEvent('ViewContent', {
+      content_name: product.name,
+      content_category: product.categories?.[0]?.name || 'Uncategorized',
+      content_ids: [product._id],
+      content_type: 'product',
+      value: product.salePrice || product.price,
+      currency: 'BDT'
+    });
   }, [product?._id, uniqueColors, product.variants]);
 
   // Fetch review eligibility separately to avoid unnecessary re-triggers
@@ -216,6 +227,18 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
       color: selectedColor || undefined,
       size: selectedSize || undefined
     }));
+
+    // Track AddToCart
+    fbEvent('AddToCart', {
+      content_name: product.name,
+      content_category: product.categories?.[0]?.name || 'Uncategorized',
+      content_ids: [product._id],
+      content_type: 'product',
+      value: (displaySalePrice || displayPrice) * finalQuantity,
+      currency: 'BDT',
+      quantity: finalQuantity
+    });
+
     toast.success(`Added ${finalQuantity} ${product.name} to cart`);
   };
 
@@ -248,6 +271,18 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
 
       // Only show success toast after server confirmation
       toast.success(successMsg);
+
+      if (willBeInWishlist) {
+        // Track AddToWishlist
+        fbEvent('AddToWishlist', {
+          content_name: product.name,
+          content_category: product.categories?.[0]?.name || 'Uncategorized',
+          content_ids: [product._id],
+          content_type: 'product',
+          value: displaySalePrice || displayPrice,
+          currency: 'BDT'
+        });
+      }
     } catch (err) {
       console.error('API toggle error:', err);
       // Rollback optimistic update
