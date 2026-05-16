@@ -7,7 +7,7 @@ import { BlogDetailsSelector } from '@/components/templates/ServerRegistry';
 import { ViewTracker } from '@/components/common/ViewTracker';
 import { FBBlogTracker } from '@/components/common/FBBlogTracker';
 
-import { generateBlogSchema, generateBreadcrumbSchema } from '@/lib/seo';
+import { generateBlogSchema, generateBreadcrumbSchema, stripHtml } from '@/lib/seo';
 import Script from 'next/script';
 
 interface BlogDetailProps {
@@ -43,26 +43,34 @@ export async function generateMetadata({ params }: BlogDetailProps): Promise<Met
   if (!blog) return { title: 'Blog Not Found' };
 
   const title = blog.metaTitle || blog.title;
-  const description = blog.metaDescription || blog.title;
-  const image = blog.thumbnail ? [blog.thumbnail] : [];
+  const description = stripHtml(blog.metaDescription || blog.title).slice(0, 160);
+  const image = blog.thumbnail ? [{ url: blog.thumbnail, alt: title }] : [];
+  const twitterImage = blog.thumbnail ? [blog.thumbnail] : [];
   const siteName = settings?.brandName || 'Online Shop';
+  const canonicalUrl = `${baseUrl}/blog/${slug}`;
 
   return {
     title,
     description,
+    alternates: {
+      canonical: canonicalUrl,
+    },
     openGraph: {
       title,
       description,
       images: image,
       type: 'article',
-      url: `${baseUrl}/blog/${slug}`,
+      url: canonicalUrl,
       siteName: siteName,
+      publishedTime: blog.createdAt,
+      modifiedTime: blog.updatedAt || blog.createdAt,
+      authors: ['BD Dukan'],
     },
     twitter: {
       card: 'summary_large_image',
       title,
       description,
-      images: image,
+      images: twitterImage,
     }
   };
 }
@@ -85,7 +93,7 @@ export default async function BlogDetailPage({ params }: BlogDetailProps) {
   const blogId = blog._id.toString();
 
   const blogSchema = await generateBlogSchema(blog);
-  const breadcrumbSchema = generateBreadcrumbSchema([
+  const breadcrumbSchema = await generateBreadcrumbSchema([
     { name: 'Home', item: '/' },
     { name: 'Blog', item: '/blog' },
     { name: blog.title, item: `/blog/${blog.slug}` }

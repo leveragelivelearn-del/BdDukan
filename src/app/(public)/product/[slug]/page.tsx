@@ -3,7 +3,7 @@ import { ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { Metadata } from 'next';
-import { generateProductSchema, generateBreadcrumbSchema } from '@/lib/seo';
+import { generateProductSchema, generateBreadcrumbSchema, stripHtml } from '@/lib/seo';
 import { ProductDetailsSelector } from '@/components/templates/ServerRegistry';
 import { ProductCard } from '@/components/storefront/ProductCard';
 import { ViewTracker } from '@/components/common/ViewTracker';
@@ -33,20 +33,24 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   ]);
   if (!product) return { title: 'Product Not Found' };
 
-  const safeDescription = (product.description ?? '').slice(0, 160);
-  const mainImage = product.images?.[0] ? [{ url: product.images[0] }] : [];
+  const safeDescription = stripHtml(product.description || '').slice(0, 160);
+  const mainImage = product.images?.[0] ? [{ url: product.images[0], alt: product.name }] : [];
   const twitterImage = product.images?.[0] ? [product.images[0]] : [];
   const siteName = settings?.brandName || 'Online Shop';
+  const canonicalUrl = `${baseUrl}/product/${slug}`;
 
   return {
     title: product.name,
     description: safeDescription,
+    alternates: {
+      canonical: canonicalUrl,
+    },
     openGraph: {
       title: product.name,
       description: safeDescription,
       images: mainImage,
-      type: 'website',
-      url: `${baseUrl}/product/${slug}`,
+      type: 'website', // Standard Next.js type
+      url: canonicalUrl,
       siteName: siteName,
     },
     twitter: {
@@ -54,6 +58,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       title: product.name,
       description: safeDescription,
       images: twitterImage,
+    },
+    other: {
+      'product:price:amount': (product.salePrice ?? product.price).toString(),
+      'product:price:currency': 'BDT',
+      'product:availability': product.stock > 0 ? 'instock' : 'oos',
     }
   };
 }
@@ -102,14 +111,14 @@ export default async function ProductDetailsPage({ params }: { params: Promise<{
   }
 
   const productSchema = await generateProductSchema(product);
-  const breadcrumbSchema = generateBreadcrumbSchema([
+  const breadcrumbSchema = await generateBreadcrumbSchema([
     { name: 'Home', item: '/' },
     { name: 'Shop', item: '/shop' },
     { name: product.name, item: `/product/${product.slug}` }
   ]);
 
   return (
-    <div className="container px-4 md:px-0 mx-auto py-10">
+    <>
       {productSchema && (
         <Script
           id="product-schema"
@@ -125,39 +134,32 @@ export default async function ProductDetailsPage({ params }: { params: Promise<{
         />
       )}
 
-      <div className="mb-6 flex items-center gap-2 text-sm text-muted-foreground">
-        <Link href="/" className="hover:text-primary transition-colors">Home</Link>
-        <ChevronRight className="h-3 w-3" />
-        <Link href="/shop" className="hover:text-primary transition-colors">Shop</Link>
-        <ChevronRight className="h-3 w-3" />
-        <span className="text-foreground font-medium truncate">{product.name}</span>
-      </div>
-
-      <div className="p-0 md:p-4">
-        {/* Track View */}
-        <ViewTracker id={product._id.toString()} type="product" />
-        {/* Dynamic Product Detail Template Selector */}
-        <ProductDetailsSelector style={settings?.uiTemplates?.productDetail || 'v1'} product={product} />
-      </div>
+      {/* Track View */}
+      <ViewTracker id={product._id.toString()} type="product" />
+      
+      {/* Dynamic Product Detail Template Selector */}
+      <ProductDetailsSelector style={settings?.uiTemplates?.productDetail || 'v1'} product={product} />
 
       {Array.isArray(related) && related.length > 0 && (
-        <section className="mt-20">
-          <div className="flex items-end justify-between mb-8 gap-4">
-            <div>
-              <h2 className="text-2xl md:text-3xl font-black tracking-tight">You May Also Like</h2>
-              <p className="text-muted-foreground mt-1">Similar picks based on this product&apos;s category and tags.</p>
+        <div className="container px-4 md:px-0 mx-auto py-10">
+          <section className="mt-20">
+            <div className="flex items-end justify-between mb-8 gap-4">
+              <div>
+                <h2 className="text-2xl md:text-3xl font-black tracking-tight">You May Also Like</h2>
+                <p className="text-muted-foreground mt-1">Similar picks based on this product&apos;s category and tags.</p>
+              </div>
+              <Button variant="outline" render={<Link href="/shop" />} nativeButton={false}>
+                Explore More
+              </Button>
             </div>
-            <Button variant="outline" render={<Link href="/shop" />} nativeButton={false}>
-              Explore More
-            </Button>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {related.map((item: any) => (
-              <ProductCard key={item._id} product={item} style={settings?.uiTemplates?.productCard || 'v1'} />
-            ))}
-          </div>
-        </section>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {related.map((item: any) => (
+                <ProductCard key={item._id} product={item} style={settings?.uiTemplates?.productCard || 'v1'} />
+              ))}
+            </div>
+          </section>
+        </div>
       )}
-    </div>
+    </>
   );
 }

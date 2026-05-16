@@ -4,12 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import Script from "next/script";
 
-declare global {
-  interface Window {
-    fbq: any;
-    _fbq: any;
-  }
-}
+
 
 // PIXEL_ID is now passed as a prop from layout
 
