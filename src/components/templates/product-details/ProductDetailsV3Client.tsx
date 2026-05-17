@@ -19,6 +19,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import Swal from 'sweetalert2';
+import { generateHtml } from '@/lib/server-html';
 
 interface ProductDetailsV3ClientProps {
   product: any;
@@ -308,9 +309,10 @@ export default function ProductDetailsV3Client({ product }: ProductDetailsV3Clie
                       <p className="text-xs font-bold uppercase tracking-tighter italic">Boutique Atelier_01</p>
                    </div>
                 </div>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                   {product.description}
-                </p>
+                <div 
+                   className="ProseMirror text-sm text-muted-foreground leading-relaxed prose dark:prose-invert max-w-none"
+                   dangerouslySetInnerHTML={{ __html: generateHtml(product.description) }} 
+                />
              </div>
           </div>
         </div>

@@ -12,6 +12,7 @@ import { toggleWishlist } from '@/store/slices/wishlistSlice';
 import { toast } from 'sonner';
 import { useSession } from 'next-auth/react';
 import ReviewsSection from '@/components/storefront/ReviewsSection';
+import { generateHtml } from '@/lib/server-html';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   DropdownMenu,
@@ -351,8 +352,11 @@ export default function ProductDetailsV2Client({ product }: ProductDetailsV2Clie
                  <TabsTrigger value="specs" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-0 py-4 font-black uppercase tracking-widest text-[10px]">Specifications</TabsTrigger>
                  <TabsTrigger value="reviews" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-0 py-4 font-black uppercase tracking-widest text-[10px]">Reviews</TabsTrigger>
               </TabsList>
-              <TabsContent value="specs" className="py-8 prose dark:prose-invert text-muted-foreground">
-                 <p>{product.description}</p>
+              <TabsContent value="specs" className="py-8 prose dark:prose-invert text-muted-foreground max-w-none">
+                 <div 
+                   className="ProseMirror text-muted-foreground leading-relaxed text-base"
+                   dangerouslySetInnerHTML={{ __html: generateHtml(product.description) }} 
+                 />
               </TabsContent>
               <TabsContent value="reviews" className="py-8">
                  <ReviewsSection productId={product._id} />

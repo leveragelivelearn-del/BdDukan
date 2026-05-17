@@ -12,6 +12,7 @@ import { toggleWishlist } from '@/store/slices/wishlistSlice';
 import { toast } from 'sonner';
 import { useSession } from 'next-auth/react';
 import ReviewsSection from '@/components/storefront/ReviewsSection';
+import { generateHtml } from '@/lib/server-html';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   DropdownMenu,
@@ -216,9 +217,10 @@ export default function ProductDetailsV5Client({ product }: ProductDetailsV5Clie
               </div>
             </div>
 
-            <p className="text-xl text-muted-foreground leading-relaxed font-medium italic">
-               {product.description}
-            </p>
+            <div 
+               className="ProseMirror text-xl text-muted-foreground leading-relaxed font-medium italic prose dark:prose-invert max-w-none"
+               dangerouslySetInnerHTML={{ __html: generateHtml(product.description) }} 
+            />
 
             <Separator />
 
@@ -337,8 +339,11 @@ export default function ProductDetailsV5Client({ product }: ProductDetailsV5Clie
                   <TabsContent value="reviews" className="animate-in fade-in duration-500">
                      <ReviewsSection productId={product._id} />
                   </TabsContent>
-                  <TabsContent value="story" className="animate-in fade-in duration-500 prose dark:prose-invert text-muted-foreground italic text-lg leading-relaxed">
-                     <p>{product.description}</p>
+                  <TabsContent value="story" className="animate-in fade-in duration-500 prose dark:prose-invert text-muted-foreground italic text-lg leading-relaxed max-w-none">
+                     <div 
+                        className="ProseMirror text-muted-foreground leading-relaxed italic text-base"
+                        dangerouslySetInnerHTML={{ __html: generateHtml(product.description) }} 
+                     />
                   </TabsContent>
                </Tabs>
             </div>

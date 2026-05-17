@@ -7,8 +7,34 @@ async function getBaseUrl() {
   return `${protocol}://${host}`;
 }
 
+const extractTextFromNode = (node: any): string => {
+  if (!node) return '';
+  if (node.type === 'text') {
+    return node.text || '';
+  }
+  if (Array.isArray(node.content)) {
+    return node.content.map(extractTextFromNode).join(' ');
+  }
+  return '';
+};
+
 export function stripHtml(html: string) {
   if (!html) return '';
+  
+  // Detect JSON format from Novel/Tiptap editor
+  if (typeof html === 'string' && (html.startsWith('{') || html.startsWith('['))) {
+    try {
+      const parsed = JSON.parse(html);
+      const content = typeof parsed === 'string' ? JSON.parse(parsed) : parsed;
+      const plainText = extractTextFromNode(content);
+      if (plainText) {
+        return plainText.replace(/\s+/g, ' ').trim();
+      }
+    } catch {
+      // Fallback to regex stripping in case of malformed JSON
+    }
+  }
+  
   return html.replace(/<[^>]*>?/gm, '').replace(/\s+/g, ' ').trim();
 }
 

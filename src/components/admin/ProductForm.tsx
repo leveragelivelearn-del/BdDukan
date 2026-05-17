@@ -37,11 +37,45 @@ import {
   RadioGroupItem 
 } from '@/components/ui/radio-group';
 import { slugify } from '@/lib/slugify';
+import NovelEditor from '@/components/editor/NovelEditor';
+
+const hasMeaningfulContent = (rawContent: string) => {
+  if (!rawContent) return false;
+
+  try {
+    const parsed = JSON.parse(rawContent);
+    const nodes = Array.isArray(parsed?.content) ? parsed.content : [];
+    return nodes.some((node: { type?: string; text?: string; content?: { text?: string }[] }) => {
+      if (!node) return false;
+      if (node.type === 'image' || node.type === 'youtube') return true;
+      if (!Array.isArray(node.content)) return false;
+      return node.content.some((child) => (child?.text ?? '').trim().length > 0);
+    });
+  } catch {
+    return rawContent.trim().length > 0;
+  }
+};
+
+const parseEditorInitialValue = (content: string) => {
+  if (!content) return undefined;
+
+  try {
+    const parsed = JSON.parse(content);
+    return typeof parsed === 'string' ? JSON.parse(parsed) : parsed;
+  } catch {
+    return {
+      type: 'doc',
+      content: [{ type: 'paragraph', content: [{ type: 'text', text: content }] }],
+    };
+  }
+};
 
 const productSchema = z.object({
   name: z.string().min(3, 'Name is required'),
   slug: z.string().min(3, 'Slug is required'),
-  description: z.string().min(10, 'Description is required'),
+  description: z.string().refine((val) => hasMeaningfulContent(val), {
+    message: 'Description must contain meaningful content',
+  }),
   price: z.union([z.coerce.number().positive('Price must be greater than zero'), z.literal('')]),
   purchasePrice: z.union([z.coerce.number().min(0), z.literal('')]).optional(),
   discountRate: z.union([z.coerce.number().min(0).max(100), z.literal('')]).optional(),
@@ -329,10 +363,9 @@ export function ProductForm({ initialData }: ProductFormProps) {
                     <FormItem>
                       <FormLabel>Description</FormLabel>
                       <FormControl>
-                        <Textarea 
-                            rows={6} 
-                            placeholder="Write product description here..." 
-                            {...field} 
+                        <NovelEditor
+                          initialValue={parseEditorInitialValue(field.value)}
+                          onChange={(value) => field.onChange(value)}
                         />
                       </FormControl>
                       <FormMessage />

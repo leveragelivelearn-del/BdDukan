@@ -23,6 +23,7 @@ import { addToCart } from '@/store/slices/cartSlice';
 import { toggleWishlist } from '@/store/slices/wishlistSlice';
 import { toast } from 'sonner';
 import { useSession } from 'next-auth/react';
+import { generateHtml } from '@/lib/server-html';
 import { Suspense } from 'react';
 import ReviewsSection from '@/components/storefront/ReviewsSection';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -698,9 +699,10 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
 
           <TabsContent value="description" className="animate-in fade-in-50 duration-500">
             <div className="prose prose-sm sm:prose-base dark:prose-invert max-w-none">
-              <div className="whitespace-pre-line text-muted-foreground leading-relaxed text-base">
-                {product.description}
-              </div>
+              <div 
+                className="ProseMirror text-muted-foreground leading-relaxed text-base" 
+                dangerouslySetInnerHTML={{ __html: generateHtml(product.description) }} 
+              />
             </div>
           </TabsContent>
 
