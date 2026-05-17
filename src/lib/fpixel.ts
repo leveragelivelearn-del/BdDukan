@@ -46,7 +46,7 @@ function getCookie(name: string) {
 export const trackEvent = async (
   eventName: string,
   data: any = {},
-  userData: { email?: string; phone?: string; name?: string; fbp?: string; fbc?: string } = {}
+  userData: Record<string, any> = {}
 ) => {
   const eventId = generateEventId();
 

@@ -54,15 +54,19 @@ export async function POST(request: NextRequest) {
     const fbc = request.cookies.get('_fbc')?.value;
 
     // Prepare user data for matching
-    const hashedEmail = userData.email ? await hashData(userData.email) : undefined;
+    const rawEmail = userData.email || userData.em;
+    const hashedEmail = rawEmail ? await hashData(rawEmail) : undefined;
     
     // Process phone: ensure digits only and has country code (BD: 88)
-    let phone = userData.phone ? userData.phone.replace(/\D/g, '') : '';
+    const rawPhone = userData.phone || userData.ph;
+    let phone = rawPhone ? rawPhone.replace(/\D/g, '') : '';
     if (phone && !phone.startsWith('88')) {
       phone = '88' + phone;
     }
     const hashedPhone = phone ? await hashData(phone) : undefined;
-    const hashedFirstName = userData.name ? await hashData(userData.name.split(' ')[0]) : undefined;
+    
+    const rawName = userData.name || userData.fn;
+    const hashedFirstName = rawName ? await hashData(rawName.split(' ')[0]) : undefined;
 
     const payload: any = {
       data: [
