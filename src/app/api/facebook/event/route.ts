@@ -67,6 +67,27 @@ export async function POST(request: NextRequest) {
     
     const rawName = userData.name || userData.fn;
     const hashedFirstName = rawName ? await hashData(rawName.split(' ')[0]) : undefined;
+    const hashedLastName = (userData.ln || (rawName && rawName.split(' ').slice(1).join(' '))) ? await hashData(userData.ln || rawName.split(' ').slice(1).join(' ')) : undefined;
+
+    const rawCity = userData.city || userData.ct;
+    const hashedCity = rawCity ? await hashData(rawCity) : undefined;
+
+    const rawState = userData.state || userData.st;
+    const hashedState = rawState ? await hashData(rawState) : undefined;
+
+    const rawZip = userData.zipCode || userData.zp || userData.zip;
+    const hashedZip = rawZip ? await hashData(String(rawZip)) : undefined;
+
+    let rawCountry = userData.country || userData.co;
+    if (rawCountry) {
+      rawCountry = rawCountry.trim().toLowerCase();
+      if (rawCountry === 'bangladesh') {
+        rawCountry = 'bd';
+      }
+    } else {
+      rawCountry = 'bd'; // Default to BD
+    }
+    const hashedCountry = await hashData(rawCountry);
 
     const payload: any = {
       data: [
@@ -84,6 +105,11 @@ export async function POST(request: NextRequest) {
             em: hashedEmail ? [hashedEmail] : undefined,
             ph: hashedPhone ? [hashedPhone] : undefined,
             fn: hashedFirstName ? [hashedFirstName] : undefined,
+            ln: hashedLastName ? [hashedLastName] : undefined,
+            ct: hashedCity ? [hashedCity] : undefined,
+            st: hashedState ? [hashedState] : undefined,
+            zp: hashedZip ? [hashedZip] : undefined,
+            country: hashedCountry ? [hashedCountry] : undefined,
           },
           custom_data: customData,
         },

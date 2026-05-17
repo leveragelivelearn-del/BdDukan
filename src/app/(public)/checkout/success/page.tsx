@@ -49,7 +49,11 @@ function SuccessContent() {
             em: orderData.shippingAddress?.email,
             ph: orderData.shippingAddress?.phone,
             fn: nameParts[0] || '',
-            ln: nameParts.slice(1).join(' ') || ''
+            ln: nameParts.slice(1).join(' ') || '',
+            ct: orderData.shippingAddress?.city,
+            st: orderData.shippingAddress?.state || orderData.shippingAddress?.division,
+            zp: orderData.shippingAddress?.zipCode || '1200', // Default zip code fallback if missing
+            country: orderData.shippingAddress?.country || 'BD'
           });
         }
       } catch (error) {
