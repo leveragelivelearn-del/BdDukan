@@ -4,12 +4,7 @@ import { useEffect, useRef, useCallback } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import Script from "next/script";
 
-declare global {
-  interface Window {
-    fbq: any;
-    _fbq: any;
-  }
-}
+// Global types for Window are declared in src/lib/fpixel.ts
 
 export default function FacebookPixel({
   pixelId,
