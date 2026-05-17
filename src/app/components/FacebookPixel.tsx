@@ -1,51 +1,61 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import Script from "next/script";
 
-
-
-// PIXEL_ID is now passed as a prop from layout
+declare global {
+  interface Window {
+    fbq: any;
+    _fbq: any;
+  }
+}
 
 export default function FacebookPixel({
   pixelId,
 }: {
   pixelId?: string;
 }) {
-  const [mounted, setMounted] = useState(false);
-  const [scriptLoaded, setScriptLoaded] = useState(false);
   const pathname = usePathname();
   const searchParams = useSearchParams();
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   // Shared eventId across browser pixel and CAPI for deduplication
   // Initialize with a dummy or empty string during SSR
   const currentEventId = useRef<string>("");
 
   const trackPageView = useCallback(
-    () => {
+    (eventId: string) => {
       if (!pixelId) return;
-      import("@/lib/fpixel").then(({ fbEvent }) => {
-        fbEvent("PageView");
+      // 1. Browser-side tracking with explicit eventID
+      if (typeof window !== "undefined" && typeof window.fbq === "function") {
+        window.fbq("track", "PageView", {}, { eventID: eventId });
+      }
+      // 2. Server-side (CAPI) tracking with same eventID
+      fetch("/api/facebook/event", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          eventName: "PageView",
+          eventUrl: window.location.href,
+          userAgent: navigator.userAgent,
+          eventId,
+          testEventCode: process.env.NEXT_PUBLIC_FACEBOOK_TEST_EVENT_CODE,
+        }),
+      }).catch(() => {
+        /* fail silently — browser pixel is the fallback */
       });
     },
     [pixelId]
   );
 
   useEffect(() => {
-    if (!mounted || !pixelId || !scriptLoaded) return;
-    trackPageView();
-  }, [pathname, searchParams, trackPageView, pixelId, mounted, scriptLoaded]);
+    if (!pixelId) return;
+    // Generate new eventId on every route change
+    currentEventId.current = crypto.randomUUID();
+    trackPageView(currentEventId.current);
+  }, [pathname, searchParams, trackPageView, pixelId]);
 
-  // Sanitize pixelId to prevent XSS
-  const sanitizedPixelId = pixelId && /^\d+$/.test(pixelId) ? pixelId : null;
-
-  if (!sanitizedPixelId) {
-    console.warn("FacebookPixel: Invalid or missing Pixel ID");
+  if (!pixelId) {
     return null;
   }
 
@@ -54,7 +64,6 @@ export default function FacebookPixel({
       <Script
         id="fb-pixel"
         strategy="afterInteractive"
-        onLoad={() => setScriptLoaded(true)}
         dangerouslySetInnerHTML={{
           __html: `
             !function(f,b,e,v,n,t,s)
@@ -65,7 +74,9 @@ export default function FacebookPixel({
             t.src=v;s=b.getElementsByTagName(e)[0];
             s.parentNode.insertBefore(t,s)}(window, document,'script',
             'https://connect.facebook.net/en_US/fbevents.js');
-            fbq('init', '${sanitizedPixelId}');
+            fbq('set', 'autoConfig', false, '${pixelId}');
+            fbq('init', '${pixelId}');
+            
           `,
         }}
       />
@@ -74,7 +85,7 @@ export default function FacebookPixel({
           height="1"
           width="1"
           style={{ display: "none" }}
-          src={`https://www.facebook.com/tr?id=${sanitizedPixelId}&ev=PageView&noscript=1`}
+          src={`https://www.facebook.com/tr?id=${pixelId}&ev=PageView&noscript=1`}
         />
       </noscript>
     </>

@@ -1,3 +1,5 @@
+"use client";
+
 declare global {
   interface Window {
     fbq?: (
@@ -33,42 +35,6 @@ const generateEventId = (): string => {
   });
 };
 
-export const fbEvent = (
-  eventName: string,
-  customData: Record<string, unknown> = {},
-  userData: Record<string, any> = {}
-) => {
-  if (typeof window === "undefined") return;
-
-  const eventId = generateEventId();
-
-  // 1. Browser-side tracking
-  if (typeof window.fbq === "function") {
-    window.fbq("track", eventName, customData, { eventID: eventId });
-  }
-
-  // 2. Server-side (CAPI) tracking
-  fetch("/api/facebook/event", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      eventName,
-      eventUrl: window.location.href,
-      userAgent: navigator.userAgent,
-      eventId,
-      customData,
-      userData: {
-        ...userData,
-        // Automatically try to get common identifiers from cookies if available
-        fbp: getCookie('_fbp'),
-        fbc: getCookie('_fbc'),
-      }
-    }),
-  }).catch(() => {
-    /* fail silently — browser pixel is the fallback */
-  });
-};
-
 function getCookie(name: string) {
   if (typeof document === 'undefined') return undefined;
   const value = `; ${document.cookie}`;
@@ -76,3 +42,56 @@ function getCookie(name: string) {
   if (parts.length === 2) return parts.pop()?.split(';').shift();
   return undefined;
 }
+
+export const trackEvent = async (
+  eventName: string,
+  data: any = {},
+  userData: { email?: string; phone?: string; name?: string; fbp?: string; fbc?: string } = {}
+) => {
+  const eventId = generateEventId();
+
+  // 1. Browser Pixel Tracking
+  if (typeof window !== "undefined" && typeof window.fbq === "function") {
+    // Check if it's a standard event or custom
+    const standardEvents = [
+      "AddPaymentInfo", "AddToCart", "AddToWishlist", "CompleteRegistration",
+      "Contact", "CustomizeProduct", "Donate", "FindLocation",
+      "InitiateCheckout", "Lead", "Purchase", "Schedule",
+      "Search", "StartTrial", "SubmitApplication", "Subscribe", "ViewContent"
+    ];
+
+    if (standardEvents.includes(eventName)) {
+      window.fbq("track", eventName, data, { eventID: eventId });
+    } else {
+      window.fbq("trackCustom", eventName, data, { eventID: eventId });
+    }
+  }
+
+  // 2. Server-side (CAPI) Tracking
+  try {
+    await fetch("/api/facebook/event", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        eventName,
+        eventUrl: typeof window !== "undefined" ? window.location.href : "",
+        userAgent: typeof navigator !== "undefined" ? navigator.userAgent : "Server",
+        eventId,
+        userData: {
+          ...userData,
+          fbp: getCookie('_fbp'),
+          fbc: getCookie('_fbc'),
+        },
+        customData: data,
+        testEventCode: process.env.NEXT_PUBLIC_FACEBOOK_TEST_EVENT_CODE,
+      }),
+    });
+  } catch (error) {
+    console.error(`[FB CAPI] Failed to track ${eventName}:`, error);
+  }
+
+  return eventId;
+};
+
+// Export fbEvent as an alias to trackEvent so existing imports work
+export const fbEvent = trackEvent;

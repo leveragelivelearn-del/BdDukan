@@ -135,7 +135,12 @@ export default async function ProductDetailsPage({ params }: { params: Promise<{
       )}
 
       {/* Track View */}
-      <ViewTracker id={product._id.toString()} type="product" />
+      <ViewTracker 
+        id={product._id.toString()} 
+        type="product" 
+        productName={product.name}
+        price={product.salePrice ?? product.price}
+      />
       
       {/* Dynamic Product Detail Template Selector */}
       <ProductDetailsSelector style={settings?.uiTemplates?.productDetail || 'v1'} product={product} />
