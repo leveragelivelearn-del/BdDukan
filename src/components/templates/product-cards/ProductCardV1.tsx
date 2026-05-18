@@ -66,11 +66,12 @@ export default function ProductCardV1({ product, isFlashSale }: ProductCardProps
   const executeAddToCart = () => {
     const displayPrice = product.price;
     const displaySalePrice = product.salePrice;
+    const activePrice = (displaySalePrice && displaySalePrice < displayPrice) ? displaySalePrice : displayPrice;
 
     dispatch(addToCart({
       productId: product._id,
       name: product.name,
-      price: (displaySalePrice !== undefined && displaySalePrice !== null) ? displaySalePrice : displayPrice,
+      price: activePrice,
       basePrice: displayPrice,
       quantity: 1,
       color: undefined,
@@ -83,7 +84,7 @@ export default function ProductCardV1({ product, isFlashSale }: ProductCardProps
       content_category: product.categories?.[0]?.name || 'Uncategorized',
       content_ids: [product._id],
       content_type: 'product',
-      value: (product.salePrice !== undefined && product.salePrice !== null) ? product.salePrice : product.price,
+      value: activePrice,
       currency: 'BDT',
       quantity: 1
     });
@@ -126,7 +127,7 @@ export default function ProductCardV1({ product, isFlashSale }: ProductCardProps
           content_category: product.categories?.[0]?.name || 'Uncategorized',
           content_ids: [product._id],
           content_type: 'product',
-          value: product.salePrice ?? product.price,
+          value: (product.salePrice && product.salePrice < product.price) ? product.salePrice : product.price,
           currency: 'BDT'
         });
       }
@@ -170,8 +171,8 @@ export default function ProductCardV1({ product, isFlashSale }: ProductCardProps
     }
   };
 
-  const discount = (product.salePrice !== undefined && product.salePrice !== null && product.price > 0)
-    ? Math.max(0, Math.round(((product.price - product.salePrice) / product.price) * 100))
+  const discount = (product.price > 0 && product.salePrice && product.salePrice < product.price)
+    ? Math.round(((product.price - product.salePrice) / product.price) * 100)
     : 0;
 
   return (
@@ -279,7 +280,7 @@ export default function ProductCardV1({ product, isFlashSale }: ProductCardProps
       <div className="flex flex-1 flex-col px-2 md:px-4 py-2 md:py-4 ">
 
         {(product.numReviews || 0) > 0 && (
-          <div 
+          <div
             className="flex items-center gap-2 mb-1"
             aria-label={`${product.ratings || 0} out of 5 stars, ${product.numReviews || 0} reviews`}
           >
@@ -307,7 +308,7 @@ export default function ProductCardV1({ product, isFlashSale }: ProductCardProps
 
         <div className="mt-auto flex items-end justify-between gap-2">
           <div className="flex flex-col justify-end min-h-[48px]">
-            {product.salePrice !== undefined && product.salePrice !== null ? (
+            {product.salePrice && product.salePrice < product.price ? (
               <>
                 <span className="text-xs line-through text-muted-foreground leading-none mb-1">
                   ৳{product.price ? Math.round(product.price) : '0'}

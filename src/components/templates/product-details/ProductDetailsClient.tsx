@@ -457,26 +457,42 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
               </DropdownMenu>
             )}
           </div>
-          <div className="flex items-center gap-4 py-2">
-            <div className="flex items-center gap-1">
-              <div className="flex gap-0.5 text-yellow-400">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Star
-                    key={i}
-                    className={`h-4 w-4 ${i < Math.floor(product.ratings || 0) ? 'fill-current' : 'text-muted'}`}
-                  />
-                ))}
+          {(product.numReviews || 0) > 0 ? (
+            <div className="flex items-center gap-4 py-2">
+              <div className="flex items-center gap-1">
+                <div className="flex gap-0.5 text-yellow-400">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Star
+                      key={i}
+                      className={`h-4 w-4 ${i < Math.floor(product.ratings || 0) ? 'fill-current' : 'text-muted'}`}
+                    />
+                  ))}
+                </div>
+                <span className="text-sm font-bold ml-1">{(product.ratings || 0).toFixed(1)}</span>
               </div>
-              <span className="text-sm font-bold ml-1">{(product.ratings || 0).toFixed(1)}</span>
+              <Separator orientation="vertical" className="h-4" />
+              <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                <span className="font-bold text-foreground">{product.numReviews || 0}</span>
+                <span>Verified Reviews</span>
+              </div>
+              {eligibility?.eligible && (
+                <>
+                  <Separator orientation="vertical" className="h-4" />
+                  <button 
+                    onClick={() => {
+                      setActiveTab('reviews');
+                      setShouldScrollToReviewForm(true);
+                    }}
+                    className="text-sm font-bold text-primary hover:underline cursor-pointer"
+                  >
+                    Write a review
+                  </button>
+                </>
+              )}
             </div>
-            <Separator orientation="vertical" className="h-4" />
-            <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-              <span className="font-bold text-foreground">{product.numReviews || 0}</span>
-              <span>Verified Reviews</span>
-            </div>
-            {eligibility?.eligible && (
-              <>
-                <Separator orientation="vertical" className="h-4" />
+          ) : (
+            eligibility?.eligible && (
+              <div className="flex items-center gap-4 py-2">
                 <button 
                   onClick={() => {
                     setActiveTab('reviews');
@@ -486,9 +502,9 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
                 >
                   Write a review
                 </button>
-              </>
-            )}
-          </div>
+              </div>
+            )
+          )}
         </div>
 
         <div className="flex flex-col gap-1">
@@ -496,7 +512,7 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
             <span className="text-3xl font-extrabold text-primary">
               {CURRENCY_SYMBOL}{Math.round(displaySalePrice || displayPrice)}
             </span>
-            {displaySalePrice && displaySalePrice !== displayPrice && (
+            {!!(displaySalePrice && displaySalePrice < displayPrice) && (
               <span className="text-xl text-muted-foreground line-through font-medium">
                 {CURRENCY_SYMBOL}{Math.round(displayPrice)}
               </span>
