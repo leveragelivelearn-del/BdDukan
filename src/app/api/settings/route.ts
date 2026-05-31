@@ -51,7 +51,6 @@ export async function GET() {
 
     const safeResult = {
       ...maskedSettings,
-      facebookAccessToken: (rawSettings.facebookAccessToken || process.env.FACEBOOK_ACCESS_TOKEN) ? "********************" : null,
       courierConfig: maskedSettings.courierConfig ? {
         ...maskedSettings.courierConfig,
         steadfast: rawSettings.courierConfig?.steadfast?.apiKey ? { apiKey: "********************", secretKey: "********************" } : maskedSettings.courierConfig.steadfast,
@@ -119,8 +118,6 @@ export async function POST(req: NextRequest) {
       'googleTagManagerId',
       'searchConsoleMeta',
       'facebookDomainVerification',
-      'metaPixelId',
-      'facebookAccessToken',
       'facebookTestEventCode',
       'saasSubscription',
       'manualPaymentConfig'
@@ -170,10 +167,8 @@ export async function POST(req: NextRequest) {
     revalidatePath('/shop', 'page');
     revalidatePath('/blog', 'page');
 
-    // Mask sensitive response data for the return
     const safeResult = {
       ...(settings as any).toObject ? (settings as any).toObject() : settings,
-      facebookAccessToken: (settings as any).facebookAccessToken ? "********************" : null
     };
 
     return NextResponse.json(safeResult, { status: 200 });

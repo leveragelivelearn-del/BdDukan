@@ -50,8 +50,8 @@ export async function POST(request: NextRequest) {
     const eventId = providedEventId || body.eventId || crypto.randomUUID();
 
     // Get browser identifiers for better matching
-    const fbp = request.cookies.get('_fbp')?.value;
-    const fbc = request.cookies.get('_fbc')?.value;
+    const fbp = request.cookies.get('_fbp')?.value || userData.fbp || userData.fbpCookie;
+    const fbc = request.cookies.get('_fbc')?.value || userData.fbc || userData.fbcCookie;
 
     // Prepare user data for matching
     const rawEmail = userData.email || userData.em;

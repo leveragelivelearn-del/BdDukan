@@ -23,7 +23,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 const marketingSchema = z.object({
   googleTagManagerId: z.string().optional(),
   searchConsoleMeta: z.string().optional(),
-  metaPixelId: z.string().optional(),
   facebookDomainVerification: z.string().optional(),
 });
 
@@ -38,7 +37,6 @@ export function MarketingForm() {
     defaultValues: {
       googleTagManagerId: '',
       searchConsoleMeta: '',
-      metaPixelId: '',
       facebookDomainVerification: '',
     },
   });
@@ -62,7 +60,6 @@ export function MarketingForm() {
           form.reset({
             googleTagManagerId: data.googleTagManagerId || '',
             searchConsoleMeta: data.searchConsoleMeta || '',
-            metaPixelId: data.metaPixelId || '',
             facebookDomainVerification: data.facebookDomainVerification || '',
           });
         }
@@ -161,22 +158,7 @@ export function MarketingForm() {
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="metaPixelId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Meta (Facebook) Pixel ID</FormLabel>
-                  <FormControl>
-                    <Input placeholder="123456789012345" {...field} disabled={isSubmitting} />
-                  </FormControl>
-                  <FormDescription>
-                    Enter your 15-digit Meta Pixel ID to track user behavior and conversions.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+
 
 
 

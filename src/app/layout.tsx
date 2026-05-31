@@ -308,7 +308,7 @@ export default async function RootLayout({
 
           <Suspense fallback={null}>
             <FacebookPixel
-              pixelId={settings?.metaPixelId || process.env.NEXT_PUBLIC_FACEBOOK_PIXEL_ID}
+              pixelId={process.env.NEXT_PUBLIC_FACEBOOK_PIXEL_ID}
             />
           </Suspense>
 
