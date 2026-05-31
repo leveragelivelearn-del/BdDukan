@@ -50,8 +50,8 @@ function SuccessContent() {
             ph: orderData.shippingAddress?.phone,
             fn: nameParts[0] || '',
             ln: nameParts.slice(1).join(' ') || '',
-            ct: orderData.shippingAddress?.city,
-            st: orderData.shippingAddress?.state || orderData.shippingAddress?.division,
+            ct: orderData.shippingAddress?.state || orderData.shippingAddress?.city,
+            st: orderData.shippingAddress?.division || orderData.shippingAddress?.state,
             zp: orderData.shippingAddress?.zipCode || '1200', // Default zip code fallback if missing
             country: orderData.shippingAddress?.country || 'BD'
           });
